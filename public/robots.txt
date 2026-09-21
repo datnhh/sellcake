@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sellcake.hoaidat-90.workers.dev/sitemap.xml

@@ -11,7 +11,11 @@ export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
   return (
     <article className="product-card">
       <div className="product-card-image" onClick={() => onOpenDetail(product)}>
-        <img src={product.image} alt={product.name} loading="lazy" />
+        <img 
+          src={product.image} 
+          alt={`${product.name} - Bếp Bà Vưn`} 
+          loading="lazy" 
+        />
         <span className="product-badge">{product.category}</span>
         {hasDiscount && (
           <span className="product-discount-badge">-{discountPercent}%</span>

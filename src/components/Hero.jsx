@@ -11,6 +11,7 @@ export default function Hero({ featuredProduct, onSelectProduct }) {
           <span>BÁNH THỦ CÔNG • NƯỚNG MỖI NGÀY</span>
         </div>
         <h1>
+          <span className="sr-only">Tiệm Bếp bà Vưn - Bánh Kem & Bánh Ngọt Thủ Công: </span>
           Hương vị ngọt ngào cho <em>những dịp đặc biệt.</em>
         </h1>
         <p className="hero-text">
@@ -27,7 +28,10 @@ export default function Hero({ featuredProduct, onSelectProduct }) {
         <div className="hero-featured" onClick={() => onSelectProduct(featuredProduct)}>
           <div className="hero-card">
             <span className="featured-badge">Bán chạy nhất</span>
-            <img src={featuredProduct.image} alt={featuredProduct.name} loading="lazy" />
+            <img
+              src={featuredProduct.image}
+              alt={`${featuredProduct.name} - Bánh bán chạy nhất Tiệm Bếp Bà Vưn`}
+            />
             <div className="hero-card-info">
               <div>
                 <strong>{featuredProduct.name}</strong>

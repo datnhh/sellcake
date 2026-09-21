@@ -61,85 +61,92 @@ export default function CheckoutModal({
     <div className="modal-overlay" onClick={isSubmitting ? undefined : onClose}>
       <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
         {!isSubmitting && (
-          <button className="modal-close-btn" onClick={onClose} aria-label="Đóng">
+          <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Đóng">
             <X size={22} />
           </button>
         )}
 
-        <div className="checkout-header">
-          <span className="eyebrow">XÁC NHẬN ĐẶT BÁNH</span>
-          <h2>Thông Tin Giao Hàng</h2>
-          <p>Vui lòng điền thông tin để tiệm liên hệ xác nhận và làm bánh cho bạn.</p>
-        </div>
+        <form className="checkout-form-wrapper" onSubmit={handleSubmit}>
+          <div className="checkout-header">
+            <span className="eyebrow">XÁC NHẬN ĐẶT BÁNH</span>
+            <h2>Thông Tin Giao Hàng</h2>
+          </div>
 
-        <div className="checkout-body">
-          <div className="checkout-summary-box">
-            <div className="summary-title">Đơn hàng của bạn ({totalItems} sản phẩm)</div>
-            <div className="summary-items">
-              {cart.map(item => (
-                <div key={item.id} className="summary-item-line">
-                  <span>{item.name} × {item.qty}</span>
-                  <strong>{formatMoney(item.price * item.qty)}</strong>
-                </div>
-              ))}
+          <div className="checkout-body">
+            <div className="checkout-summary-box">
+              <div className="summary-title">Đơn hàng của bạn ({totalItems} sản phẩm)</div>
+              <div className="summary-items">
+                {cart.map(item => (
+                  <div key={item.id} className="summary-item-line">
+                    <span>{item.name} × {item.qty}</span>
+                    <strong>{formatMoney(item.price * item.qty)}</strong>
+                  </div>
+                ))}
+              </div>
+              <div className="summary-total-line">
+                <span>Tổng thanh toán:</span>
+                <strong className="final-price">{formatMoney(total)}</strong>
+              </div>
             </div>
-            <div className="summary-total-line">
-              <span>Tổng thanh toán:</span>
-              <strong className="final-price">{formatMoney(total)}</strong>
+
+            <p className="checkout-notice-text">
+              (*) Vui lòng điền thông tin để tiệm liên hệ xác nhận và làm bánh cho bạn.
+            </p>
+
+            <div className="checkout-form-fields">
+              <div className="form-group">
+                <label><User size={15} /> Họ và tên người nhận *</label>
+                <input 
+                  name="name" 
+                  value={formData.name} 
+                  onChange={handleChange} 
+                  required 
+                  disabled={isSubmitting}
+                  placeholder="Ví dụ: Nguyễn Văn A"
+                />
+              </div>
+
+              <div className="form-group">
+                <label><Phone size={15} /> Số điện thoại liên hệ *</label>
+                <input 
+                  type="tel"
+                  name="phone" 
+                  value={formData.phone} 
+                  onChange={handleChange} 
+                  required 
+                  disabled={isSubmitting}
+                  placeholder="09xx xxx xxx"
+                />
+                {phoneError && <span className="field-error">{phoneError}</span>}
+              </div>
+
+              <div className="form-group">
+                <label><MapPin size={15} /> Địa chỉ giao bánh *</label>
+                <input 
+                  name="address" 
+                  value={formData.address} 
+                  onChange={handleChange} 
+                  required 
+                  disabled={isSubmitting}
+                  placeholder="Số nhà, tên đường, phường, quận..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label><MessageSquare size={15} /> Ghi chú cho tiệm bánh</label>
+                <textarea 
+                  name="note" 
+                  rows="2" 
+                  value={formData.note} 
+                  onChange={handleChange} 
+                  disabled={isSubmitting}
+                  placeholder="Ví dụ: Ghi chữ 'Chúc mừng sinh nhật Mai' lên bánh, chuẩn bị thêm nến số..."
+                />
+              </div>
             </div>
           </div>
 
-          <form className="checkout-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label><User size={15} /> Họ và tên người nhận *</label>
-              <input 
-                name="name" 
-                value={formData.name} 
-                onChange={handleChange} 
-                required 
-                disabled={isSubmitting}
-                placeholder="Ví dụ: Nguyễn Văn A"
-              />
-            </div>
-
-            <div className="form-group">
-              <label><Phone size={15} /> Số điện thoại liên hệ *</label>
-              <input 
-                type="tel"
-                name="phone" 
-                value={formData.phone} 
-                onChange={handleChange} 
-                required 
-                disabled={isSubmitting}
-                placeholder="09xx xxx xxx"
-              />
-              {phoneError && <span className="field-error">{phoneError}</span>}
-            </div>
-
-            <div className="form-group">
-              <label><MapPin size={15} /> Địa chỉ giao bánh *</label>
-              <input 
-                name="address" 
-                value={formData.address} 
-                onChange={handleChange} 
-                required 
-                disabled={isSubmitting}
-                placeholder="Số nhà, tên đường, phường, quận..."
-              />
-            </div>
-
-            <div className="form-group">
-              <label><MessageSquare size={15} /> Ghi chú cho tiệm bánh</label>
-              <textarea 
-                name="note" 
-                rows="2" 
-                value={formData.note} 
-                onChange={handleChange} 
-                disabled={isSubmitting}
-                placeholder="Ví dụ: Ghi chữ 'Chúc mừng sinh nhật Mai' lên bánh, chuẩn bị thêm nến số..."
-              />
-            </div>
-
+          <div className="checkout-footer">
             <button 
               type="submit" 
               className={`primary-btn submit-order-btn ${isSubmitting ? "loading" : ""}`}
@@ -157,8 +164,8 @@ export default function CheckoutModal({
                 </>
               )}
             </button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );
