@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, CheckCircle, Loader2, Calendar, Clock, User, Phone, MapPin, MessageSquare } from "lucide-react";
+import { X, CheckCircle, Loader2, User, Phone, MapPin, MessageSquare } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
 
 export default function CheckoutModal({ 
@@ -12,8 +12,6 @@ export default function CheckoutModal({
     name: "",
     phone: "",
     address: "",
-    receiveDate: "",
-    receiveTime: "",
     note: ""
   });
 
@@ -21,9 +19,6 @@ export default function CheckoutModal({
   const [phoneError, setPhoneError] = useState("");
 
   if (!isOpen) return null;
-
-  // Ngày tối thiểu là ngày hôm nay (YYYY-MM-DD)
-  const todayStr = new Date().toISOString().split("T")[0];
 
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -131,32 +126,6 @@ export default function CheckoutModal({
                 disabled={isSubmitting}
                 placeholder="Số nhà, tên đường, phường, quận..."
               />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label><Calendar size={15} /> Ngày nhận bánh *</label>
-                <input 
-                  type="date" 
-                  name="receiveDate" 
-                  min={todayStr}
-                  value={formData.receiveDate} 
-                  onChange={handleChange} 
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-
-              <div className="form-group">
-                <label><Clock size={15} /> Giờ nhận mong muốn</label>
-                <input 
-                  type="time" 
-                  name="receiveTime" 
-                  value={formData.receiveTime} 
-                  onChange={handleChange} 
-                  disabled={isSubmitting}
-                />
-              </div>
             </div>
 
             <div className="form-group">

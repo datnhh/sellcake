@@ -1,7 +1,7 @@
 import React from "react";
-import { CakeSlice, ShoppingCart, Settings } from "lucide-react";
+import { CakeSlice, ShoppingCart } from "lucide-react";
 
-export default function Header({ shopName, totalItems, onOpenCart, onOpenAdmin }) {
+export default function Header({ shopName, totalItems, onOpenCart }) {
   return (
     <header className="header">
       <a href="#home" className="brand">
@@ -19,15 +19,6 @@ export default function Header({ shopName, totalItems, onOpenCart, onOpenAdmin }
       </nav>
 
       <div className="header-actions">
-        <button 
-          className="admin-btn" 
-          onClick={onOpenAdmin} 
-          title="Quản lý thực đơn (Thêm/Sửa bánh)"
-        >
-          <Settings size={18} />
-          <span className="hide-on-mobile">Quản lý bánh</span>
-        </button>
-
         <button 
           className="cart-button" 
           onClick={onOpenCart}

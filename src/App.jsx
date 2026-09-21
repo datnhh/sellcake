@@ -52,6 +52,13 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
+  // Hỗ trợ mở modal quản lý bánh khi cần test ở local (truy cập ?admin=true)
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("admin") === "true") {
+      setIsAdminOpen(true);
+    }
+  }, []);
+
   // Lưu sản phẩm vào localStorage khi có thay đổi
   useEffect(() => {
     try {
@@ -158,8 +165,8 @@ export default function App() {
       customerName: customerData.name,
       customerPhone: customerData.phone,
       customerAddress: customerData.address,
-      receiveDate: customerData.receiveDate,
-      receiveTime: customerData.receiveTime || "Trong giờ mở cửa",
+      receiveDate: customerData.receiveDate || "Giao sớm nhất",
+      receiveTime: customerData.receiveTime || "Trong ngày",
       orderItems: orderLines,
       totalPrice: formatMoney(totalAmount),
       note: customerData.note || "Không có"
@@ -190,7 +197,6 @@ export default function App() {
         shopName={SHOP_CONFIG.shopName}
         totalItems={totalItems}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       <main>
