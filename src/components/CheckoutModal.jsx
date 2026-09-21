@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { X, CheckCircle, Loader2, User, Phone, MapPin, MessageSquare } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
 
-export default function CheckoutModal({ 
-  isOpen, 
-  onClose, 
-  cart, 
-  onSubmitOrder 
+export default function CheckoutModal({
+  isOpen,
+  onClose,
+  cart,
+  onSubmitOrder
 }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -96,11 +96,11 @@ export default function CheckoutModal({
             <div className="checkout-form-fields">
               <div className="form-group">
                 <label><User size={15} /> Họ và tên người nhận *</label>
-                <input 
-                  name="name" 
-                  value={formData.name} 
-                  onChange={handleChange} 
-                  required 
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
                   disabled={isSubmitting}
                   placeholder="Ví dụ: Nguyễn Văn A"
                 />
@@ -108,12 +108,12 @@ export default function CheckoutModal({
 
               <div className="form-group">
                 <label><Phone size={15} /> Số điện thoại liên hệ *</label>
-                <input 
+                <input
                   type="tel"
-                  name="phone" 
-                  value={formData.phone} 
-                  onChange={handleChange} 
-                  required 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
                   disabled={isSubmitting}
                   placeholder="09xx xxx xxx"
                 />
@@ -122,11 +122,11 @@ export default function CheckoutModal({
 
               <div className="form-group">
                 <label><MapPin size={15} /> Địa chỉ giao bánh *</label>
-                <input 
-                  name="address" 
-                  value={formData.address} 
-                  onChange={handleChange} 
-                  required 
+                <input
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
                   disabled={isSubmitting}
                   placeholder="Số nhà, tên đường, phường, quận..."
                 />
@@ -134,11 +134,11 @@ export default function CheckoutModal({
 
               <div className="form-group">
                 <label><MessageSquare size={15} /> Ghi chú cho tiệm bánh</label>
-                <textarea 
-                  name="note" 
-                  rows="2" 
-                  value={formData.note} 
-                  onChange={handleChange} 
+                <textarea
+                  name="note"
+                  rows="2"
+                  value={formData.note}
+                  onChange={handleChange}
                   disabled={isSubmitting}
                   placeholder="Ví dụ: Ghi chữ 'Chúc mừng sinh nhật Mai' lên bánh, chuẩn bị thêm nến số..."
                 />
@@ -147,15 +147,15 @@ export default function CheckoutModal({
           </div>
 
           <div className="checkout-footer">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={`primary-btn submit-order-btn ${isSubmitting ? "loading" : ""}`}
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
                   <Loader2 size={18} className="spinner" />
-                  Đang ghi nhận đơn hàng lên Google Sheets...
+                  Đang ghi nhận đơn hàng...
                 </>
               ) : (
                 <>
