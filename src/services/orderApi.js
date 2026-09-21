@@ -41,11 +41,11 @@ export async function sendOrderToGoogleSheet(orderData, webAppUrl) {
       return {
         success: true,
         isDemo: false,
-        message: "Đã gửi đơn hàng thành công lên Google Sheet!"
+        message: "Đã gửi đơn hàng thành công!"
       };
     }
   } catch (error) {
-    console.error("Lỗi khi gửi đơn lên Google Sheets:", error);
-    throw new Error("Không thể kết nối tới Google Sheets. Vui lòng kiểm tra lại liên kết Web App hoặc quyền truy cập.");
+    console.error("Lỗi khi gửi đơn lên Sheets:", error);
+    throw new Error("Không thể kết nối tới Sheets. Vui lòng kiểm tra lại liên kết Web App hoặc quyền truy cập.");
   }
 }

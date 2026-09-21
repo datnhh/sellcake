@@ -9,8 +9,7 @@ export const DEFAULT_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80"
+      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80"
     ],
     description: "Cốt bánh bông lan mềm xốp, phủ lớp kem tươi béo nhẹ quyện cùng dâu tây Đà Lạt tươi ngọt thanh.",
     size: "Đường kính 16cm (4-6 người)",
@@ -26,7 +25,6 @@ export const DEFAULT_PRODUCTS = [
     image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
     images: [
       "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1586040140372-b424ae52086e?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=80"
     ],
     description: "Hương vị Tiramisu chuẩn Ý với lớp phô mai Mascarpone béo mịn, bánh Ladyfinger ngấm cà phê espresso và rượu nhẹ.",

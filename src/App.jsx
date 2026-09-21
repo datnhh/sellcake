@@ -101,7 +101,7 @@ export default function App() {
     setCart(prev => {
       const found = prev.find(item => item.id === product.id);
       if (found) {
-        return prev.map(item => 
+        return prev.map(item =>
           item.id === product.id ? { ...item, qty: item.qty + quantity } : item
         );
       }
@@ -114,7 +114,7 @@ export default function App() {
 
   // Hàm thay đổi số lượng trong giỏ
   const handleChangeQty = (productId, delta) => {
-    setCart(prev => 
+    setCart(prev =>
       prev
         .map(item => item.id === productId ? { ...item, qty: item.qty + delta } : item)
         .filter(item => item.qty > 0)
@@ -175,26 +175,26 @@ export default function App() {
 
     try {
       const response = await sendOrderToGoogleSheet(orderPayload, SHOP_CONFIG.googleSheetUrl);
-      
+
       setCart([]);
       setIsCheckoutOpen(false);
 
       if (response.isDemo) {
-        setToast("✓ [Chế độ Demo] Đơn hàng đã được ghi nhận vào Console! Hãy cấu hình Google Sheet URL để lưu tự động.");
+        setToast("✓ [Chế độ Demo] Đơn hàng đã được ghi nhận vào Console! Hãy cấu hình Sheet URL để lưu tự động.");
       } else {
-        setToast("✓ Đã lưu đơn hàng lên Google Sheets thành công! Tiệm sẽ liên hệ với bạn trong ít phút.");
+        setToast("✓ Đã ghi nhận đơn hàng thành công! Tiệm sẽ liên hệ với bạn trong ít phút.");
       }
 
       setTimeout(() => setToast(null), 6000);
     } catch (error) {
-      alert(error.message || "Gửi đơn hàng thất bại. Vui lòng kiểm tra lại liên kết Google Sheets.");
+      alert(error.message || "Gửi đơn hàng thất bại. Vui lòng kiểm tra lại liên kết Sheets.");
     }
   };
 
   return (
     <div className="bakery-app">
       {/* Header */}
-      <Header 
+      <Header
         shopName={SHOP_CONFIG.shopName}
         totalItems={totalItems}
         onOpenCart={() => setIsCartOpen(true)}
@@ -202,7 +202,7 @@ export default function App() {
 
       <main>
         {/* Banner giới thiệu */}
-        <Hero 
+        <Hero
           featuredProduct={featuredProduct}
           onSelectProduct={setDetailProduct}
         />
@@ -217,7 +217,7 @@ export default function App() {
 
             <div className="category-filters">
               {categories.map(category => (
-                <button 
+                <button
                   key={category}
                   className={`filter-btn ${selectedCategory === category ? "active" : ""}`}
                   onClick={() => setSelectedCategory(category)}
@@ -230,7 +230,7 @@ export default function App() {
 
           <div className="products-grid">
             {filteredProducts.map(product => (
-              <ProductCard 
+              <ProductCard
                 key={product.id}
                 product={product}
                 onAddToCart={(p) => handleAddToCart(p, 1)}
@@ -258,13 +258,13 @@ export default function App() {
         <div className="footer-content">
           <img src="/logo.png" alt={SHOP_CONFIG.shopName} className="footer-logo" />
           <p>© {new Date().getFullYear()} {SHOP_CONFIG.shopName}. Bánh thủ công nướng mới mỗi ngày.</p>
-          <small>Hệ thống nhận đơn hàng tự động liên kết Google Sheets (100% Free Hosting & Database).</small>
+          <small>Website giới thiệu và nhận đặt bánh hoàn toàn miễn phí do tiệm tự quản lý.</small>
         </div>
       </footer>
 
       {/* Modal Chi Tiết Bánh */}
       {detailProduct && (
-        <ProductDetailModal 
+        <ProductDetailModal
           product={detailProduct}
           onClose={() => setDetailProduct(null)}
           onAddToCart={handleAddToCart}
@@ -272,7 +272,7 @@ export default function App() {
       )}
 
       {/* Modal Quản Lý Bánh (Chủ shop) */}
-      <AdminProductModal 
+      <AdminProductModal
         isOpen={isAdminOpen}
         onClose={() => setIsAdminOpen(false)}
         products={products}
@@ -282,7 +282,7 @@ export default function App() {
       />
 
       {/* Drawer Giỏ Hàng */}
-      <CartDrawer 
+      <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
@@ -292,7 +292,7 @@ export default function App() {
       />
 
       {/* Modal Đặt Hàng */}
-      <CheckoutModal 
+      <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
