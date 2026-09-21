@@ -1,6 +1,8 @@
 export const SHOP_CONFIG = {
   shopName: import.meta.env.VITE_SHOP_NAME || "Tiệm Bếp bà Vưn",
   phone: import.meta.env.VITE_SHOP_PHONE || "0937658834",
+  facebook: import.meta.env.VITE_SHOP_FACEBOOK || "https://www.facebook.com/bepbavan/",
+  zalo: import.meta.env.VITE_SHOP_ZALO || "https://zalo.me/0937658834",
   email: import.meta.env.VITE_SHOP_EMAIL || "thanhvannt1911@gmail.com",
   address: import.meta.env.VITE_SHOP_ADDRESS || "125 Đồng Văn Cống, Cát Lái, TP. Hồ Chí Minh",
   hours: import.meta.env.VITE_SHOP_HOURS || "08:00 - 20:00 (Hàng ngày)",

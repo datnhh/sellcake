@@ -7,7 +7,7 @@ export default function Hero({ featuredProduct, onSelectProduct }) {
     <section id="home" className="hero">
       <div className="hero-content">
         <div className="hero-tag">
-          <Sparkles size={14} />
+          <img src="/logo.png" alt="Bếp Bà Vưn" className="hero-tag-avatar" />
           <span>BÁNH THỦ CÔNG • NƯỚNG MỖI NGÀY</span>
         </div>
         <h1>

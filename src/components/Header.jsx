@@ -1,13 +1,11 @@
 import React from "react";
-import { CakeSlice, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 export default function Header({ shopName, totalItems, onOpenCart }) {
   return (
     <header className="header">
       <a href="#home" className="brand">
-        <div className="brand-icon">
-          <CakeSlice size={24} />
-        </div>
+        <img src="/logo.png" alt={shopName} className="brand-logo-img" />
         <span>{shopName}</span>
       </a>
 

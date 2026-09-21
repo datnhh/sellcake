@@ -1,12 +1,64 @@
-import React, { useState } from "react";
-import { X, Plus, Minus, ShoppingCart, Check } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { X, Plus, Minus, ShoppingCart, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
 
 export default function ProductDetailModal({ product, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Lấy tối đa 10 ảnh, fallback về product.image nếu không có mảng images
+  const imageList = useMemo(() => {
+    if (!product) return [];
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      return product.images.slice(0, 10);
+    }
+    return product.image ? [product.image] : [];
+  }, [product]);
+
+  // Reset vị trí slide khi đổi bánh
+  useEffect(() => {
+    setCurrentIndex(0);
+    setIsPaused(false);
+  }, [product?.id]);
+
+  // Tự động chuyển slide mỗi 3.5s (tự tạm dừng khi rê chuột hoặc chạm tay)
+  useEffect(() => {
+    if (imageList.length <= 1 || isPaused) return;
+
+    const timer = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % imageList.length);
+    }, 3500);
+
+    return () => clearInterval(timer);
+  }, [imageList.length, isPaused]);
+
+  // Hỗ trợ phím mũi tên trái/phải để chuyển ảnh
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (imageList.length <= 1) return;
+      if (e.key === "ArrowLeft") {
+        setCurrentIndex(prev => (prev - 1 + imageList.length) % imageList.length);
+      } else if (e.key === "ArrowRight") {
+        setCurrentIndex(prev => (prev + 1) % imageList.length);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [imageList.length]);
 
   if (!product) return null;
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev - 1 + imageList.length) % imageList.length);
+  };
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCurrentIndex(prev => (prev + 1) % imageList.length);
+  };
 
   const hasDiscount = Boolean(product.originalPrice && product.originalPrice > product.price);
   const discountPercent = hasDiscount 
@@ -30,8 +82,72 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
         </button>
 
         <div className="detail-grid">
-          <div className="detail-image-container">
-            <img src={product.image} alt={product.name} />
+          {/* Gallery Slider ảnh bánh */}
+          <div 
+            className="detail-gallery-container"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setIsPaused(false)}
+          >
+            <div className="gallery-main-viewport">
+              <img 
+                key={currentIndex}
+                src={imageList[currentIndex]} 
+                alt={`${product.name} - góc ảnh ${currentIndex + 1}`} 
+                loading="lazy"
+                decoding="async"
+                className="gallery-main-img"
+              />
+
+              {imageList.length > 1 && (
+                <>
+                  <button 
+                    type="button"
+                    className="gallery-nav-btn prev" 
+                    onClick={handlePrev}
+                    aria-label="Ảnh trước"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button 
+                    type="button"
+                    className="gallery-nav-btn next" 
+                    onClick={handleNext}
+                    aria-label="Ảnh kế tiếp"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="gallery-counter-badge">
+                    {currentIndex + 1} / {imageList.length}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Dải hình thu nhỏ (Thumbnails) */}
+            {imageList.length > 1 && (
+              <div className="gallery-thumbnails-row">
+                {imageList.map((imgUrl, idx) => (
+                  <button
+                    type="button"
+                    key={idx}
+                    className={`gallery-thumb-btn ${idx === currentIndex ? "active" : ""}`}
+                    onClick={() => setCurrentIndex(idx)}
+                    aria-label={`Xem ảnh số ${idx + 1}`}
+                  >
+                    <img 
+                      src={imgUrl} 
+                      alt={`${product.name} thumb ${idx + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="detail-content">

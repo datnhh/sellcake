@@ -24,7 +24,8 @@ export default function App() {
         const defaultItem = DEFAULT_PRODUCTS.find(d => d.id === item.id);
         return {
           ...item,
-          originalPrice: item.originalPrice !== undefined ? item.originalPrice : defaultItem?.originalPrice
+          originalPrice: item.originalPrice !== undefined ? item.originalPrice : defaultItem?.originalPrice,
+          images: (item.images && item.images.length > 0) ? item.images : defaultItem?.images
         };
       });
     } catch {
@@ -255,17 +256,20 @@ export default function App() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-content">
+          <img src="/logo.png" alt={SHOP_CONFIG.shopName} className="footer-logo" />
           <p>© {new Date().getFullYear()} {SHOP_CONFIG.shopName}. Bánh thủ công nướng mới mỗi ngày.</p>
           <small>Hệ thống nhận đơn hàng tự động liên kết Google Sheets (100% Free Hosting & Database).</small>
         </div>
       </footer>
 
       {/* Modal Chi Tiết Bánh */}
-      <ProductDetailModal 
-        product={detailProduct}
-        onClose={() => setDetailProduct(null)}
-        onAddToCart={handleAddToCart}
-      />
+      {detailProduct && (
+        <ProductDetailModal 
+          product={detailProduct}
+          onClose={() => setDetailProduct(null)}
+          onAddToCart={handleAddToCart}
+        />
+      )}
 
       {/* Modal Quản Lý Bánh (Chủ shop) */}
       <AdminProductModal 
