@@ -6,7 +6,7 @@ export const SHOP_CONFIG = {
   email: import.meta.env.VITE_SHOP_EMAIL || "thanhvannt1911@gmail.com",
   address: import.meta.env.VITE_SHOP_ADDRESS || "125 Đồng Văn Cống, Cát Lái, TP. Hồ Chí Minh",
   hours: import.meta.env.VITE_SHOP_HOURS || "08:00 - 20:00 (Hàng ngày)",
-  googleSheetUrl: import.meta.env.VITE_GOOGLE_SHEET_URL || "https://script.google.com/macros/s/AKfycbzYbhwRWdtuYbjDrLiH1skG2V-oO4VpsmmATFnNCZgCdE2wWLEnbSHXIrZ36vYn5x7y/exec"
+  googleSheetUrl: import.meta.env.VITE_GOOGLE_SHEET_URL || "https://script.google.com/macros/s/AKfycbwj81F078BUOlMXRYNcxWl6BZ0NbGFpbLIczg7QLuk48Y-VwZeim3p0O5EtxFLvrgYH/exec"
 };
 
 export const formatMoney = (n) =>
