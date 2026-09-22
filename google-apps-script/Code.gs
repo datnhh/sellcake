@@ -113,12 +113,13 @@ function doPost(e) {
     sheet.appendRow(row);
 
     // 2. Bắn tin nhắn thông báo tức thì lên Telegram
-    sendTelegramNotification(data, timeFormatted);
+    var teleResult = sendTelegramNotification(data, timeFormatted);
 
     return ContentService
       .createTextOutput(JSON.stringify({ 
         status: "success", 
-        message: "Đã lưu đơn hàng vào Sheet và gửi thông báo Telegram thành công" 
+        message: "Đã lưu đơn hàng vào Sheet thành công",
+        telegram: teleResult
       }))
       .setMimeType(ContentService.MimeType.JSON);
 
@@ -139,8 +140,9 @@ function sendTelegramNotification(data, timeFormatted) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || 
       TELEGRAM_BOT_TOKEN.indexOf("ĐIỀN_") !== -1 || 
       TELEGRAM_CHAT_ID.indexOf("ĐIỀN_") !== -1) {
-    Logger.log("Chưa cấu hình Telegram Bot Token hoặc Chat ID, bỏ qua bước gửi thông báo.");
-    return;
+    var warnMsg = "Chưa cấu hình Telegram Bot Token hoặc Chat ID, bỏ qua bước gửi thông báo.";
+    Logger.log(warnMsg);
+    return { success: false, reason: warnMsg };
   }
 
   try {
@@ -173,11 +175,20 @@ function sendTelegramNotification(data, timeFormatted) {
     };
 
     var response = UrlFetchApp.fetch(url, options);
-    Logger.log("Kết quả gửi Telegram: " + response.getContentText());
+    var respCode = response.getResponseCode();
+    var respText = response.getContentText();
+    Logger.log("Kết quả gửi Telegram [" + respCode + "]: " + respText);
+
+    return { 
+      success: respCode === 200, 
+      httpCode: respCode, 
+      response: respText 
+    };
 
   } catch (err) {
     // Không làm gián đoạn việc lưu Sheet nếu Telegram gặp sự cố
     Logger.log("Lỗi gửi thông báo Telegram: " + err.toString());
+    return { success: false, error: err.toString() };
   }
 }
 
@@ -222,6 +233,136 @@ function testTelegram() {
   var now = new Date();
   var timeFormatted = Utilities.formatDate(now, "GMT+7", "dd/MM/yyyy HH:mm:ss");
 
-  sendTelegramNotification(testData, timeFormatted);
-  Logger.log("Đã kích hoạt hàm testTelegram, vui lòng kiểm tra hộp thoại Telegram của bạn!");
+  var result = sendTelegramNotification(testData, timeFormatted);
+  if (result && result.success) {
+    Logger.log("✅ GỬI THÀNH CÔNG: Đã gửi tin nhắn Telegram thành công! Vui lòng kiểm tra nhóm Telegram.");
+  } else {
+    Logger.log("❌ GỬI THẤT BẠI: " + JSON.stringify(result));
+  }
+}
+
+/**
+ * HÀM ÉP BUỘC XIN CẤP QUYỀN (Nếu Google chưa từng hiện popup xin quyền)
+ * Không dùng try/catch để Google bắt buộc phải dừng lại hiện popup ủy quyền!
+ */
+function forceAuthorize() {
+  var response = UrlFetchApp.fetch("https://api.telegram.org");
+  Logger.log("✅ Đã cấp quyền gọi mạng thành công! Mã phản hồi: " + response.getResponseCode());
+}
+
+/**
+ * HÀM KHỞI TẠO TỰ ĐỘNG BẢNG DANH SÁCH BÁNH VÀO GOOGLE SHEET
+ * (Dùng khi bạn muốn đổ nhanh dữ liệu 6 loại bánh vào file Google Sheet mới)
+ */
+function khoiTaoDanhSachBanh() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  
+  // Xóa nội dung cũ (nếu có)
+  sheet.clear();
+  
+  var headers = [
+    "id",
+    "name",
+    "category",
+    "price",
+    "originalPrice",
+    "image",
+    "images",
+    "description",
+    "size",
+    "ingredients",
+    "featured"
+  ];
+  
+  var rows = [
+    [
+      1,
+      "Bánh kem dâu tây tươi",
+      "Bánh kem",
+      350000,
+      395000,
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80",
+      "Cốt bánh bông lan mềm xốp, phủ lớp kem tươi béo nhẹ quyện cùng dâu tây Đà Lạt tươi ngọt thanh.",
+      "Đường kính 16cm (4-6 người)",
+      "Cốt bông lan vani, kem whipping Anchor, dâu tây tươi, siro dâu tự nấu.",
+      true
+    ],
+    [
+      2,
+      "Tiramisu truyền thống Ý",
+      "Bánh lạnh",
+      280000,
+      310000,
+      "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=80",
+      "Hương vị Tiramisu chuẩn Ý với lớp phô mai Mascarpone béo mịn, bánh Ladyfinger ngấm cà phê espresso và rượu nhẹ.",
+      "Hộp tròn 14cm (3-4 người)",
+      "Phô mai Mascarpone Ý, bánh Ladyfinger, cà phê Espresso, bột cacao nguyên chất.",
+      true
+    ],
+    [
+      3,
+      "New York Cheesecake dâu",
+      "Bánh lạnh",
+      320000,
+      360000,
+      "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1508737027454-e6454ef45afd?auto=format&fit=crop&w=900&q=80",
+      "Cheesecake nướng phong cách New York, vị phô mai đậm đà hòa quyện lớp mứt dâu tây chua chua ngọt ngọt.",
+      "Đường kính 14cm (3-5 người)",
+      "Cream cheese Philadelphia, đế bánh quy bơ nướng, sốt dâu tây tươi.",
+      false
+    ],
+    [
+      4,
+      "Croissant bơ Pháp ngàn lớp",
+      "Bánh nhỏ",
+      45000,
+      55000,
+      "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1530610476181-d83430b64dcd?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80",
+      "Bánh sừng bò nướng giòn rụm bên ngoài, ruột xốp mềm nhiều lớp thơm lừng bơ Pháp cao cấp.",
+      "1 chiếc (~90g)",
+      "Bột mì Pháp T55, bơ cán Elle & Vire, men tự nhiên.",
+      false
+    ],
+    [
+      5,
+      "Cupcake vani kem bơ hoa hồng",
+      "Bánh nhỏ",
+      55000,
+      65000,
+      "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=900&q=80",
+      "Bánh cupcake vani Madagascar thơm phức, phủ lớp kem bơ tạo hình hoa tinh tế ngọt ngào.",
+      "Set 1 bánh (~80g)",
+      "Trứng gà tươi, bơ lạt, vani Madagascar nguyên chất, kem bơ Thụy Sĩ.",
+      false
+    ],
+    [
+      6,
+      "Bánh kem Dark Chocolate 70%",
+      "Bánh kem",
+      390000,
+      430000,
+      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=900&q=80",
+      "Dành riêng cho tín đồ socola với ganache chocolate nguyên chất 70% đắng nhẹ, béo thơm đậm đà.",
+      "Đường kính 16cm (4-6 người)",
+      "Socola đen 70% Bỉ, kem whipping, cốt chiffon chocolate xốp ẩm.",
+      true
+    ]
+  ];
+  
+  sheet.appendRow(headers);
+  sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#f4e5da");
+  sheet.setFrozenRows(1);
+  
+  for (var i = 0; i < rows.length; i++) {
+    sheet.appendRow(rows[i]);
+  }
+  
+  Logger.log("✅ Đã khởi tạo danh sách bánh vào Google Sheet thành công!");
 }

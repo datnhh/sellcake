@@ -8,20 +8,50 @@ import CartDrawer from "./components/CartDrawer";
 import CheckoutModal from "./components/CheckoutModal";
 import PromiseSection from "./components/PromiseSection";
 import ContactSection from "./components/ContactSection";
+import SyncProductsPage from "./components/SyncProductsPage";
 import { SHOP_CONFIG, formatMoney } from "./config/shopConfig";
-import { DEFAULT_PRODUCTS } from "./config/defaultProducts";
+import PRODUCTS_DATA from "./data/products.json";
 import { sendOrderToGoogleSheet } from "./services/orderApi";
 
 export default function App() {
-  // Quản lý danh sách sản phẩm (có hỗ trợ lưu LocalStorage khi chủ tiệm thêm/sửa)
+  // Quản lý route hiển thị (trang chủ hoặc trang đồng bộ /sync-banh)
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    const path = window.location.pathname;
+    const search = window.location.search;
+    if (path.includes("/sync-banh") || search.includes("sync-banh")) {
+      return "sync";
+    }
+    return "home";
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const search = window.location.search;
+      if (path.includes("/sync-banh") || search.includes("sync-banh")) {
+        setCurrentRoute("sync");
+      } else {
+        setCurrentRoute("home");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const handleBackToHome = () => {
+    window.history.pushState({}, "", "/");
+    setCurrentRoute("home");
+  };
+
+  // Quản lý danh sách sản phẩm (đọc từ cache LocalStorage hoặc file products.json)
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem("bakery-products-v2");
-      if (!saved) return DEFAULT_PRODUCTS;
+      if (!saved) return PRODUCTS_DATA;
       const parsed = JSON.parse(saved);
       // Tự động đồng bộ originalPrice từ danh mục mẫu nếu trong cache trình duyệt chưa có
       return parsed.map(item => {
-        const defaultItem = DEFAULT_PRODUCTS.find(d => d.id === item.id);
+        const defaultItem = PRODUCTS_DATA.find(d => d.id === item.id);
         return {
           ...item,
           originalPrice: item.originalPrice !== undefined ? item.originalPrice : defaultItem?.originalPrice,
@@ -29,7 +59,7 @@ export default function App() {
         };
       });
     } catch {
-      return DEFAULT_PRODUCTS;
+      return PRODUCTS_DATA;
     }
   });
 
@@ -141,7 +171,7 @@ export default function App() {
 
   // Khôi phục danh sách bánh mẫu ban đầu
   const handleResetProducts = () => {
-    setProducts(DEFAULT_PRODUCTS);
+    setProducts(PRODUCTS_DATA);
     localStorage.removeItem("bakery-products-v2");
     setToast("✓ Đã khôi phục thực đơn bánh mặc định!");
     setTimeout(() => setToast(null), 3000);
@@ -190,6 +220,16 @@ export default function App() {
       alert(error.message || "Gửi đơn hàng thất bại. Vui lòng kiểm tra lại liên kết Sheets.");
     }
   };
+
+  // Render trang đồng bộ sản phẩm từ Google Sheet nếu truy cập /sync-banh
+  if (currentRoute === "sync") {
+    return (
+      <SyncProductsPage
+        onBackToHome={handleBackToHome}
+        onProductsUpdated={(newProducts) => setProducts(newProducts)}
+      />
+    );
+  }
 
   return (
     <div className="bakery-app">
