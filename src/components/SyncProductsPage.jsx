@@ -268,7 +268,9 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
                       <span className="sync-old-price">{formatMoney(p.originalPrice)}</span>
                     )}
                   </div>
-                  <p className="sync-card-size">📏 {p.size}</p>
+                  <p className="sync-card-size">
+                    📏 {p.hasVariants ? `${p.variants.length} phân loại size` : (p.size || p.variants?.[0]?.name || "Quy cách tiêu chuẩn")}
+                  </p>
                 </div>
               </div>
             ))}

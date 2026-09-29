@@ -56,7 +56,24 @@ export default function AdminProductModal({
       description: formData.description.trim() || "Bánh thơm ngon được làm thủ công mỗi ngày.",
       size: formData.size.trim() || "Tiêu chuẩn",
       ingredients: formData.ingredients.trim() || "Nguyên liệu tự nhiên, không chất bảo quản.",
-      featured: false
+      featured: false,
+      variants: [
+        {
+          id: `${Date.now()}_1`,
+          name: formData.size.trim() || "Size tiêu chuẩn",
+          price: Number(formData.price),
+          originalPrice: originalPriceNum && originalPriceNum > Number(formData.price) ? originalPriceNum : null
+        }
+      ],
+      defaultVariant: {
+        id: `${Date.now()}_1`,
+        name: formData.size.trim() || "Size tiêu chuẩn",
+        price: Number(formData.price),
+        originalPrice: originalPriceNum && originalPriceNum > Number(formData.price) ? originalPriceNum : null
+      },
+      minPrice: Number(formData.price),
+      maxPrice: Number(formData.price),
+      hasVariants: false
     };
 
     onAddProduct(newProduct);

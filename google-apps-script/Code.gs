@@ -208,6 +208,22 @@ function escapeHtml(text) {
  * Hàm kiểm tra nhanh Web App có hoạt động không
  */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === "init_public_web") {
+    try {
+      taoSheetPublicWeb();
+      return ContentService
+        .createTextOutput(JSON.stringify({ 
+          status: "success", 
+          message: "Đã tạo và định dạng sheet [public_web] thành công!" 
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({ 
       status: "ok", 
@@ -366,3 +382,401 @@ function khoiTaoDanhSachBanh() {
   
   Logger.log("✅ Đã khởi tạo danh sách bánh vào Google Sheet thành công!");
 }
+
+/**
+ * HÀM TẠO SHEET MỚI [public_web] THEO FORMAT CHUẨN BIẾN THỂ (VARIANTS)
+ * Bạn có thể chọn hàm này trên thanh công cụ Apps Script rồi bấm "Chạy" (Run)!
+ */
+function taoSheetPublicWeb() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetName = "public_web";
+  var sheet = ss.getSheetByName(sheetName);
+
+  if (sheet) {
+    sheet.clear();
+  } else {
+    sheet = ss.insertSheet(sheetName);
+  }
+
+  var headers = [
+    "id",
+    "name",
+    "category",
+    "variant_name",
+    "price",
+    "original_price",
+    "image",
+    "images",
+    "description",
+    "ingredients",
+    "featured"
+  ];
+
+  var rows = [
+    [
+      1,
+      "Flan Gato Socola / Matcha",
+      "Bánh lạnh",
+      "Size Lớn (16cm)",
+      60000,
+      70000,
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=80",
+      "Sự kết hợp hoàn hảo giữa cốt bông lan xốp mịn thơm đắng vị socola/matcha và lớp flan caramel béo ngậy tan trên đầu lưỡi.",
+      "Trứng gà tươi, sữa tươi Anchor, whipping cream, cốt bánh socola/matcha, caramel.",
+      true
+    ],
+    [
+      1,
+      "",
+      "",
+      "Size Nhỏ (10cm)",
+      30000,
+      35000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      2,
+      "Chuối Yến Mạch Hạt Dinh Dưỡng",
+      "Bánh nướng",
+      "Ổ lớn (350g)",
+      80000,
+      90000,
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80",
+      "Bánh nướng healthy không bột mì, vị ngọt thanh tự nhiên từ chuối hòa quyện hạnh nhân bùi ngậy và socola chip giòn rụm.",
+      "Chuối sứ chín tự nhiên, yến mạch nguyên cám, hạnh nhân, socola chip, mật ong hoa rừng.",
+      true
+    ],
+    [
+      2,
+      "",
+      "",
+      "Ổ nhỏ (170g)",
+      40000,
+      45000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      3,
+      "Flan Caramel Truyền Thống",
+      "Bánh lạnh",
+      "Set 10 hũ",
+      100000,
+      110000,
+      "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=80",
+      "Hũ bánh flan núng nính mềm mịn như lụa, vị béo thơm đậm đà của sữa trứng quyện cùng caramel đắng ngọt dịu êm.",
+      "Trứng gà ta tươi, sữa tươi nguyên kem, kem tươi Anchor, đường thắng caramel thủ công.",
+      true
+    ],
+    [
+      3,
+      "",
+      "",
+      "Set 5 hũ",
+      55000,
+      60000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      4,
+      "Sữa Chua Dẻo Tươi Mát",
+      "Bánh lạnh",
+      "Set 10 hũ",
+      100000,
+      110000,
+      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1571212515416-fef01fc43637?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=900&q=80",
+      "Sữa chua nhà làm lên men truyền thống, kết cấu sánh dẻo mát lạnh, vị chua ngọt thanh dịu hỗ trợ tiêu hóa mỗi ngày.",
+      "Sữa tươi thanh trùng, men sữa chua cái tự nhiên, sữa đặc béo ngậy.",
+      false
+    ],
+    [
+      4,
+      "",
+      "",
+      "Set 5 hũ",
+      55000,
+      60000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      5,
+      "Bánh Bò Bông Nước Cốt Dừa",
+      "Bánh hấp",
+      "Hộp 8 bánh",
+      65000,
+      75000,
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80",
+      "Chiếc bánh nở bông nhiều rễ tre mềm xốp, thơm phức mùi lá dứa vườn quyện vị béo ngậy ngào ngạt của nước cốt dừa tươi.",
+      "Bột gạo nguyên chất, nước cốt lá dứa tươi, cốt dừa béo đậm đà, men cơm rượu.",
+      false
+    ],
+    [
+      5,
+      "",
+      "",
+      "Hộp 4 bánh",
+      35000,
+      40000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      6,
+      "Combo Bữa Xế Dinh Dưỡng",
+      "Combo",
+      "Set Lớn (350g)",
+      75000,
+      85000,
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80",
+      "Set ăn xế nhẹ bụng và giàu năng lượng, kết hợp hoàn hảo giữa bánh chuối nướng ấm thơm bùi và sữa chua chua ngọt mát lành.",
+      "Bánh chuối yến mạch nướng hạt, kèm hũ sữa chua dẻo tươi lên men tự nhiên.",
+      true
+    ],
+    [
+      6,
+      "",
+      "",
+      "Set Nhỏ (170g)",
+      45000,
+      50000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      7,
+      "Bông Lan Yogurt Mềm Mịn",
+      "Bánh nướng",
+      "Khuôn 22cm",
+      100000,
+      115000,
+      "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80",
+      "Cốt bánh nhẹ tơi như mây, vị béo dịu của trứng sữa hòa cùng chút chua thanh nhẹ từ yogurt, ăn hoài không biết ngán.",
+      "Bột mì hảo hạng, sữa chua dẻo, trứng gà tươi, dầu thực vật cao cấp, đường mía.",
+      true
+    ],
+    [
+      7,
+      "",
+      "",
+      "Khuôn 12cm",
+      50000,
+      60000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      8,
+      "Castella Cà Phê Đậm Vị",
+      "Bánh nướng",
+      "Khuôn 18cm",
+      110000,
+      125000,
+      "https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
+      "Thớ bánh mềm ẩm thơm lừng ngào ngạt hương cà phê rang xay, vị đắng ngọt hài hòa đánh thức mọi giác quan thưởng thức.",
+      "Cốt bánh Castella truyền thống, cà phê espresso nguyên chất, trứng tươi, sữa tươi.",
+      false
+    ],
+    [
+      8,
+      "",
+      "",
+      "Khuôn 14cm",
+      65000,
+      75000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      9,
+      "Souffle Cheesecake Nhật Bản",
+      "Bánh nướng",
+      "Khuôn 22cm",
+      120000,
+      140000,
+      "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1508737027454-e6454ef45afd?auto=format&fit=crop&w=900&q=80",
+      "Bánh phô mai nướng phong cách Nhật núng nính nhẹ xốp, tan ngay đầu lưỡi với hương phô mai thơm ngậy đầy mê hoặc.",
+      "Kem phô mai Cream Cheese Anchor, bơ lạt Pháp, trứng gà tươi, sữa tươi nguyên kem.",
+      true
+    ],
+    [
+      9,
+      "",
+      "",
+      "Khuôn 12cm",
+      60000,
+      70000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      10,
+      "Castella Dark Chocolate",
+      "Bánh nướng",
+      "Khuôn 18cm",
+      110000,
+      125000,
+      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80",
+      "Bánh bông lan socola xốp ẩm phủ đầy hạt socola chip giòn bùi, vị đậm đà sang trọng dành riêng cho tín đồ socola.",
+      "Socola đen nguyên chất đun chảy, socola chip Bỉ, bột mì, trứng gà tươi, sữa tươi.",
+      false
+    ],
+    [
+      10,
+      "",
+      "",
+      "Khuôn 14cm",
+      65000,
+      75000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      11,
+      "Hộp Mix Chuối Yến Mạch 2 Vị",
+      "Bánh nướng",
+      "Hộp lớn (350g)",
+      80000,
+      90000,
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=900&q=80",
+      "Hộp bánh tiện lợi trọn vẹn cả 2 hương vị: bánh chuối yến mạch nguyên bản thơm lành và vị socola hạt đậm đà quyến rũ.",
+      "Chuối sứ chín, yến mạch nguyên cám, socola đen, hạnh nhân giòn, mật ong.",
+      true
+    ],
+    [
+      11,
+      "",
+      "",
+      "Hộp nhỏ (170g)",
+      40000,
+      45000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      12,
+      "Bánh Chuối Nướng Bơ Hạt",
+      "Bánh nướng",
+      "Ổ lớn (350g)",
+      60000,
+      70000,
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=900&q=80",
+      "Hương vị bánh chuối nướng tuổi thơ nồng nàn nâng tầm cùng bơ Pháp và hạt dinh dưỡng giòn rụm béo bùi.",
+      "Chuối chín ngọt đậm, bơ lạt Anchor, hạt óc chó, hạnh nhân lát, socola chip.",
+      false
+    ],
+    [
+      12,
+      "",
+      "",
+      "Ổ nhỏ (170g)",
+      30000,
+      35000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      13,
+      "Hộp Mix Chuối Nướng 2 Vị",
+      "Bánh nướng",
+      "Hộp lớn (350g)",
+      60000,
+      70000,
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?auto=format&fit=crop&w=900&q=80,https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=900&q=80",
+      "Set mix 2 vị chuối nướng bơ truyền thống và socola ấm thơm, đa dạng hương vị cho cả gia đình cùng thưởng thức.",
+      "Chuối nướng truyền thống, bánh chuối socola, bơ lạt Anchor, hạt ngũ cốc rang.",
+      false
+    ],
+    [
+      13,
+      "",
+      "",
+      "Hộp nhỏ (170g)",
+      30000,
+      35000,
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  ];
+
+  sheet.appendRow(headers);
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setFontWeight("bold");
+  headerRange.setBackground("#f4e5da");
+  headerRange.setFontColor("#5c3d2e");
+  sheet.setFrozenRows(1);
+
+  for (var i = 0; i < rows.length; i++) {
+    sheet.appendRow(rows[i]);
+  }
+
+  // Căn chỉnh độ rộng cột
+  sheet.setColumnWidth(1, 60);  // id
+  sheet.setColumnWidth(2, 220); // name
+  sheet.setColumnWidth(3, 110); // category
+  sheet.setColumnWidth(4, 180); // variant_name
+  sheet.setColumnWidth(5, 90);  // price
+  sheet.setColumnWidth(6, 90);  // original_price
+  sheet.setColumnWidth(7, 240); // image
+  sheet.setColumnWidth(8, 280); // images
+  sheet.setColumnWidth(9, 280); // description
+  sheet.setColumnWidth(10, 220); // ingredients
+  sheet.setColumnWidth(11, 80);  // featured
+
+  Logger.log("✅ Đã tạo sheet [public_web] với đầy đủ biến thể và hình ảnh thành công!");
+}
+

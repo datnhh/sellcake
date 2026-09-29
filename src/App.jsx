@@ -46,18 +46,10 @@ export default function App() {
   // Quản lý danh sách sản phẩm (đọc từ cache LocalStorage hoặc file products.json)
   const [products, setProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem("bakery-products-v2");
+      const saved = localStorage.getItem("bakery-products-v4");
       if (!saved) return PRODUCTS_DATA;
       const parsed = JSON.parse(saved);
-      // Tự động đồng bộ originalPrice từ danh mục mẫu nếu trong cache trình duyệt chưa có
-      return parsed.map(item => {
-        const defaultItem = PRODUCTS_DATA.find(d => d.id === item.id);
-        return {
-          ...item,
-          originalPrice: item.originalPrice !== undefined ? item.originalPrice : defaultItem?.originalPrice,
-          images: (item.images && item.images.length > 0) ? item.images : defaultItem?.images
-        };
-      });
+      return parsed;
     } catch {
       return PRODUCTS_DATA;
     }
@@ -66,7 +58,7 @@ export default function App() {
   // Quản lý giỏ hàng
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem("bakery-cart");
+      const saved = localStorage.getItem("bakery-cart-v3");
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -78,6 +70,7 @@ export default function App() {
 
   // State các modal
   const [detailProduct, setDetailProduct] = useState(null);
+  const [detailInitialVariant, setDetailInitialVariant] = useState(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -93,7 +86,7 @@ export default function App() {
   // Lưu sản phẩm vào localStorage khi có thay đổi
   useEffect(() => {
     try {
-      localStorage.setItem("bakery-products-v2", JSON.stringify(products));
+      localStorage.setItem("bakery-products-v4", JSON.stringify(products));
     } catch (e) {
       console.error("Không thể lưu sản phẩm vào localStorage:", e);
     }
@@ -102,7 +95,7 @@ export default function App() {
   // Lưu giỏ hàng vào localStorage khi có thay đổi
   useEffect(() => {
     try {
-      localStorage.setItem("bakery-cart", JSON.stringify(cart));
+      localStorage.setItem("bakery-cart-v3", JSON.stringify(cart));
     } catch (e) {
       console.error("Không thể lưu giỏ hàng vào localStorage:", e);
     }
@@ -126,34 +119,101 @@ export default function App() {
 
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
-  // Hàm thêm vào giỏ hàng
-  const handleAddToCart = (product, quantity = 1) => {
+  // Mở modal chi tiết bánh
+  const handleOpenDetail = (product, variant = null) => {
+    setDetailProduct(product);
+    setDetailInitialVariant(variant || product.defaultVariant || product.variants?.[0] || null);
+  };
+
+  // Hàm thêm vào giỏ hàng (Mặc định chọn Size lớn nhất nếu không chỉ định)
+  const handleAddToCart = (product, quantity = 1, variant = null) => {
+    const selectedVariant = variant || product.defaultVariant || product.variants?.[0] || {
+      id: `${product.id}_def`,
+      name: "Size tiêu chuẩn",
+      price: product.price,
+      originalPrice: product.originalPrice
+    };
+
+    const cartItemId = `${product.id}_${selectedVariant.id || selectedVariant.name}`;
+
     setCart(prev => {
-      const found = prev.find(item => item.id === product.id);
-      if (found) {
-        return prev.map(item =>
-          item.id === product.id ? { ...item, qty: item.qty + quantity } : item
+      const foundIdx = prev.findIndex(item => item.cartItemId === cartItemId || item.id === cartItemId);
+      if (foundIdx !== -1) {
+        return prev.map((item, idx) =>
+          idx === foundIdx ? { ...item, qty: item.qty + quantity } : item
         );
       }
-      return [...prev, { ...product, qty: quantity }];
+      return [
+        ...prev,
+        {
+          cartItemId,
+          productId: product.id,
+          name: product.name,
+          category: product.category,
+          image: product.image,
+          price: selectedVariant.price,
+          originalPrice: selectedVariant.originalPrice,
+          selectedVariant,
+          variants: product.variants || [selectedVariant],
+          qty: quantity
+        }
+      ];
     });
 
-    setToast(`✓ Đã thêm ${quantity} bánh "${product.name}" vào giỏ hàng!`);
+    setToast(`✓ Đã thêm ${quantity} bánh "${product.name} (${selectedVariant.name})" vào giỏ hàng!`);
     setTimeout(() => setToast(null), 3000);
   };
 
   // Hàm thay đổi số lượng trong giỏ
-  const handleChangeQty = (productId, delta) => {
+  const handleChangeQty = (cartItemId, delta) => {
     setCart(prev =>
       prev
-        .map(item => item.id === productId ? { ...item, qty: item.qty + delta } : item)
+        .map(item => (item.cartItemId === cartItemId || item.id === cartItemId) ? { ...item, qty: item.qty + delta } : item)
         .filter(item => item.qty > 0)
     );
   };
 
   // Hàm xóa món khỏi giỏ
-  const handleRemoveItem = (productId) => {
-    setCart(prev => prev.filter(item => item.id !== productId));
+  const handleRemoveItem = (cartItemId) => {
+    setCart(prev => prev.filter(item => item.cartItemId !== cartItemId && item.id !== cartItemId));
+  };
+
+  // Hàm chỉnh sửa lại size bánh ngay trong giỏ hàng
+  const handleChangeVariant = (cartItemId, newVariant) => {
+    setCart(prev => {
+      const currentItem = prev.find(item => item.cartItemId === cartItemId || item.id === cartItemId);
+      if (!currentItem) return prev;
+
+      const newCartItemId = `${currentItem.productId || currentItem.id}_${newVariant.id || newVariant.name}`;
+
+      // Nếu chọn lại chính variant hiện tại thì bỏ qua
+      if (currentItem.cartItemId === newCartItemId) return prev;
+
+      const existingItem = prev.find(item => item.cartItemId === newCartItemId);
+      if (existingItem) {
+        // Nếu size mới đã có trong giỏ -> gộp số lượng và xóa dòng cũ
+        return prev
+          .filter(item => item.cartItemId !== cartItemId && item.id !== cartItemId)
+          .map(item => item.cartItemId === newCartItemId ? { ...item, qty: item.qty + currentItem.qty } : item);
+      }
+
+      // Chưa có -> Cập nhật sang biến thể mới
+      return prev.map(item => {
+        if (item.cartItemId === cartItemId || item.id === cartItemId) {
+          return {
+            ...item,
+            cartItemId: newCartItemId,
+            selectedVariant: newVariant,
+            price: newVariant.price,
+            originalPrice: newVariant.originalPrice
+          };
+        }
+        return item;
+      });
+    });
+
+    setToast(`✓ Đã đổi sang ${newVariant.name}`);
+    setTimeout(() => setToast(null), 2500);
   };
 
   // Hàm thêm bánh mới (dành cho chủ shop)
@@ -165,14 +225,14 @@ export default function App() {
   const handleDeleteProduct = (productId) => {
     if (confirm("Bạn có chắc muốn xóa loại bánh này khỏi thực đơn?")) {
       setProducts(prev => prev.filter(p => p.id !== productId));
-      setCart(prev => prev.filter(p => p.id !== productId));
+      setCart(prev => prev.filter(p => p.productId !== productId && p.id !== productId));
     }
   };
 
   // Khôi phục danh sách bánh mẫu ban đầu
   const handleResetProducts = () => {
     setProducts(PRODUCTS_DATA);
-    localStorage.removeItem("bakery-products-v2");
+    localStorage.removeItem("bakery-products-v4");
     setToast("✓ Đã khôi phục thực đơn bánh mặc định!");
     setTimeout(() => setToast(null), 3000);
   };
@@ -184,11 +244,14 @@ export default function App() {
     setIsCheckoutOpen(true);
   };
 
-  // Xử lý gửi đơn hàng lên Google Sheets
+  // Xử lý gửi đơn hàng lên Google Sheets & Telegram
   const handleSubmitOrder = async (customerData) => {
     const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     const orderLines = cart
-      .map(item => `${item.name} (x${item.qty}) - ${formatMoney(item.price * item.qty)}`)
+      .map(item => {
+        const sizeBadge = item.selectedVariant?.name ? ` [${item.selectedVariant.name}]` : "";
+        return `${item.name}${sizeBadge} (x${item.qty}) - ${formatMoney(item.price * item.qty)}`;
+      })
       .join("\n");
 
     const orderPayload = {
@@ -244,7 +307,7 @@ export default function App() {
         {/* Banner giới thiệu */}
         <Hero
           featuredProduct={featuredProduct}
-          onSelectProduct={setDetailProduct}
+          onSelectProduct={handleOpenDetail}
         />
 
         {/* Danh mục và Sản phẩm */}
@@ -273,8 +336,8 @@ export default function App() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={(p) => handleAddToCart(p, 1)}
-                onOpenDetail={setDetailProduct}
+                onAddToCart={handleAddToCart}
+                onOpenDetail={handleOpenDetail}
               />
             ))}
           </div>
@@ -306,6 +369,7 @@ export default function App() {
       {detailProduct && (
         <ProductDetailModal
           product={detailProduct}
+          initialVariant={detailInitialVariant}
           onClose={() => setDetailProduct(null)}
           onAddToCart={handleAddToCart}
         />
@@ -328,6 +392,7 @@ export default function App() {
         cart={cart}
         onChangeQty={handleChangeQty}
         onRemoveItem={handleRemoveItem}
+        onChangeVariant={handleChangeVariant}
         onProceedCheckout={handleProceedCheckout}
       />
 

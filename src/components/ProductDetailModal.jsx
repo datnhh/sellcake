@@ -2,11 +2,24 @@ import React, { useState, useEffect, useMemo } from "react";
 import { X, Plus, Minus, ShoppingCart, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
 
-export default function ProductDetailModal({ product, onClose, onAddToCart }) {
+export default function ProductDetailModal({ product, initialVariant, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Biến thể đang chọn: ưu tiên initialVariant hoặc defaultVariant (size lớn nhất)
+  const [selectedVariant, setSelectedVariant] = useState(
+    initialVariant || product?.defaultVariant || product?.variants?.[0] || null
+  );
+
+  // Đồng bộ khi đổi sản phẩm hoặc initialVariant
+  useEffect(() => {
+    setSelectedVariant(
+      initialVariant || product?.defaultVariant || product?.variants?.[0] || null
+    );
+    setQuantity(1);
+  }, [product?.id, initialVariant]);
 
   // Lấy tối đa 10 ảnh, fallback về product.image nếu không có mảng images
   const imageList = useMemo(() => {
@@ -60,13 +73,16 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
     setCurrentIndex(prev => (prev + 1) % imageList.length);
   };
 
-  const hasDiscount = Boolean(product.originalPrice && product.originalPrice > product.price);
+  const currentPrice = selectedVariant ? selectedVariant.price : product.price;
+  const currentOrigPrice = selectedVariant ? selectedVariant.originalPrice : product.originalPrice;
+
+  const hasDiscount = Boolean(currentOrigPrice && currentOrigPrice > currentPrice);
   const discountPercent = hasDiscount 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+    ? Math.round(((currentOrigPrice - currentPrice) / currentOrigPrice) * 100) 
     : 0;
 
   const handleAdd = () => {
-    onAddToCart(product, quantity);
+    onAddToCart(product, quantity, selectedVariant);
     setAdded(true);
     setTimeout(() => {
       setAdded(false);
@@ -153,27 +169,47 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
           <div className="detail-content">
             <span className="detail-category">{product.category}</span>
             <h2 className="detail-title">{product.name}</h2>
+            
             <div className="detail-price-box">
-              <span className="detail-price">{formatMoney(product.price)}</span>
+              <span className="detail-price">{formatMoney(currentPrice)}</span>
               {hasDiscount && (
                 <>
-                  <span className="detail-original-price">{formatMoney(product.originalPrice)}</span>
+                  <span className="detail-original-price">{formatMoney(currentOrigPrice)}</span>
                   <span className="detail-discount-badge">Tiết kiệm {discountPercent}%</span>
                 </>
               )}
             </div>
 
+            {/* Chọn Size / Biến thể trong modal chi tiết */}
+            {product.hasVariants && product.variants && product.variants.length > 1 && (
+              <div className="detail-section detail-variants-section">
+                <h4>Chọn kích cỡ / phân loại</h4>
+                <div className="modal-variant-options">
+                  {product.variants.map((v) => {
+                    const isSelected = selectedVariant?.id === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        type="button"
+                        className={`modal-variant-btn ${isSelected ? "active" : ""}`}
+                        onClick={() => setSelectedVariant(v)}
+                      >
+                        <div className="modal-variant-info">
+                          <span className="modal-variant-name">{v.name}</span>
+                          <span className="modal-variant-price">{formatMoney(v.price)}</span>
+                        </div>
+                        {isSelected && <span className="variant-check-icon">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="detail-section">
               <h4>Mô tả sản phẩm</h4>
               <p>{product.description}</p>
             </div>
-
-            {product.size && (
-              <div className="detail-section">
-                <h4>Kích thước / Quy cách</h4>
-                <p className="detail-highlight">{product.size}</p>
-              </div>
-            )}
 
             {product.ingredients && (
               <div className="detail-section">
@@ -187,11 +223,15 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                 <button 
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
                   disabled={quantity <= 1}
+                  aria-label="Giảm số lượng"
                 >
                   <Minus size={16} />
                 </button>
                 <span>{quantity}</span>
-                <button onClick={() => setQuantity(q => q + 1)}>
+                <button 
+                  onClick={() => setQuantity(q => q + 1)}
+                  aria-label="Tăng số lượng"
+                >
                   <Plus size={16} />
                 </button>
               </div>
@@ -207,7 +247,7 @@ export default function ProductDetailModal({ product, onClose, onAddToCart }) {
                   </>
                 ) : (
                   <>
-                    <ShoppingCart size={18} /> Thêm {formatMoney(product.price * quantity)}
+                    <ShoppingCart size={18} /> Thêm {formatMoney(currentPrice * quantity)}
                   </>
                 )}
               </button>

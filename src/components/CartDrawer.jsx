@@ -8,6 +8,7 @@ export default function CartDrawer({
   cart, 
   onChangeQty, 
   onRemoveItem, 
+  onChangeVariant,
   onProceedCheckout 
 }) {
   if (!isOpen) return null;
@@ -38,41 +39,84 @@ export default function CartDrawer({
         ) : (
           <>
             <div className="cart-items-list">
-              {cart.map((item) => (
-                <div className="cart-item" key={item.id}>
-                  <img src={item.image} alt={item.name} />
-                  <div className="cart-item-details">
-                    <h4 className="cart-item-name">{item.name}</h4>
-                    <span className="cart-item-price">{formatMoney(item.price)}</span>
-                    
-                    <div className="cart-item-controls">
-                      <div className="quantity-controls">
+              {cart.map((item) => {
+                const itemKey = item.cartItemId || `${item.id}_${item.selectedVariant?.name || "default"}`;
+                const hasMultipleVariants = Array.isArray(item.variants) && item.variants.length > 1;
+
+                return (
+                  <div className="cart-item" key={itemKey}>
+                    <img src={item.image} alt={item.name} />
+                    <div className="cart-item-details">
+                      <h4 className="cart-item-name">{item.name}</h4>
+                      
+                      {/* Cho phép chỉnh sửa lại size bánh ngay trong giỏ hàng */}
+                      {hasMultipleVariants ? (
+                        <div className="cart-item-variant-select">
+                          <label htmlFor={`size-select-${itemKey}`}>Size:</label>
+                          <select
+                            id={`size-select-${itemKey}`}
+                            value={item.selectedVariant?.id || ""}
+                            onChange={(e) => {
+                              const newVar = item.variants.find(v => v.id === e.target.value);
+                              if (newVar && onChangeVariant) {
+                                onChangeVariant(itemKey, newVar);
+                              }
+                            }}
+                            className="cart-variant-dropdown"
+                          >
+                            {item.variants.map((v) => (
+                              <option key={v.id} value={v.id}>
+                                {v.name} ({formatMoney(v.price)})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : (
+                        item.selectedVariant?.name && (
+                          <span className="cart-item-size-badge">
+                            {item.selectedVariant.name}
+                          </span>
+                        )
+                      )}
+
+                      <div className="cart-item-price-row">
+                        <span className="cart-item-price">{formatMoney(item.price)}</span>
+                        {item.qty > 1 && (
+                          <span className="cart-item-subtotal">
+                            (Tổng: {formatMoney(item.price * item.qty)})
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="cart-item-controls">
+                        <div className="quantity-controls">
+                          <button 
+                            onClick={() => onChangeQty(itemKey, -1)}
+                            aria-label="Giảm"
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="qty-number">{item.qty}</span>
+                          <button 
+                            onClick={() => onChangeQty(itemKey, 1)}
+                            aria-label="Tăng"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+
                         <button 
-                          onClick={() => onChangeQty(item.id, -1)}
-                          aria-label="Giảm"
+                          className="remove-item-btn" 
+                          onClick={() => onRemoveItem(itemKey)}
+                          title="Xóa khỏi giỏ"
                         >
-                          <Minus size={14} />
-                        </button>
-                        <span className="qty-number">{item.qty}</span>
-                        <button 
-                          onClick={() => onChangeQty(item.id, 1)}
-                          aria-label="Tăng"
-                        >
-                          <Plus size={14} />
+                          <Trash2 size={16} />
                         </button>
                       </div>
-
-                      <button 
-                        className="remove-item-btn" 
-                        onClick={() => onRemoveItem(item.id)}
-                        title="Xóa khỏi giỏ"
-                      >
-                        <Trash2 size={16} />
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="drawer-footer">

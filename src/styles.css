@@ -2436,3 +2436,248 @@ a {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   PRODUCT VARIANTS & SIZES STYLES (BOX LISTING, DETAIL MODAL, CART DRAWER)
+   ========================================================================== */
+
+/* 1. Box sản phẩm ở Listing */
+.product-card-variants {
+  margin: 10px 0 14px 0;
+  padding: 10px 12px;
+  background: #fdfaf7;
+  border: 1px dashed #eddcd2;
+  border-radius: var(--radius-sm, 10px);
+}
+
+.variants-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.variant-label {
+  font-weight: 600;
+  color: var(--text-main, #3d2b1f);
+}
+
+.variant-price-range {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--primary, #d97736);
+  background: #fdf0e6;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.variant-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
+
+.variant-chip-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: #ffffff;
+  border: 1.5px solid #e8dbd0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  user-select: none;
+  min-width: 0;
+}
+
+.variant-chip-btn:hover {
+  border-color: var(--primary, #d97736);
+  background: #fff9f5;
+  transform: translateY(-1px);
+}
+
+.variant-chip-btn.selected {
+  background: #fff4ec;
+  border-color: var(--primary, #d97736);
+  box-shadow: 0 2px 6px rgba(217, 119, 54, 0.18);
+}
+
+.variant-chip-btn .chip-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-main, #332219);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.variant-chip-btn .chip-price {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--primary, #d97736);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.variant-chip-btn.selected .chip-name {
+  color: var(--primary-dark, #b85b1e);
+}
+
+.product-size-hint {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted, #7c685b);
+  margin-top: 2px;
+}
+
+.add-to-cart-btn.added {
+  background: #2e7d32 !important;
+  color: #ffffff !important;
+  border-color: #2e7d32 !important;
+  animation: pulse-added 0.4s ease;
+}
+
+@keyframes pulse-added {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* 2. Modal chi tiết sản phẩm (ProductDetailModal) */
+.detail-variants-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #f0e4db;
+}
+
+.detail-variants-section h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main, #332219);
+  margin-bottom: 10px;
+}
+
+.modal-variant-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-variant-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 15px;
+  background: #faf6f2;
+  border: 1.5px solid #e8ddd5;
+  border-radius: var(--radius-sm, 10px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.modal-variant-btn:hover {
+  background: #fbf0e8;
+  border-color: var(--primary, #d97736);
+}
+
+.modal-variant-btn.active {
+  background: #fff4ec;
+  border-color: var(--primary, #d97736);
+  box-shadow: 0 3px 10px rgba(217, 119, 54, 0.14);
+}
+
+.modal-variant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modal-variant-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main, #332219);
+}
+
+.modal-variant-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary, #d97736);
+}
+
+.variant-check-icon {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary, #d97736);
+  background: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 3. Giỏ hàng (CartDrawer) - Chỉnh sửa size trực tiếp */
+.cart-item-variant-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 6px 0;
+  font-size: 12px;
+}
+
+.cart-item-variant-select label {
+  font-weight: 600;
+  color: var(--text-muted, #7c685b);
+}
+
+.cart-variant-dropdown {
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main, #332219);
+  background: #fffaf5;
+  border: 1px solid #dfcfc2;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cart-variant-dropdown:focus,
+.cart-variant-dropdown:hover {
+  border-color: var(--primary, #d97736);
+}
+
+.cart-item-size-badge {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted, #7c685b);
+  background: #f7ede5;
+  padding: 2px 7px;
+  border-radius: 5px;
+  margin: 3px 0 5px 0;
+  width: fit-content;
+}
+
+.cart-item-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 3px 0;
+}
+
+.cart-item-subtotal {
+  font-size: 12px;
+  color: var(--text-muted, #8a7668);
+  font-weight: 500;
+}
