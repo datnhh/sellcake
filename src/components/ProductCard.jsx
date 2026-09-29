@@ -21,8 +21,8 @@ export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
   const currentOrigPrice = selectedVariant ? selectedVariant.originalPrice : product.originalPrice;
 
   const hasDiscount = Boolean(currentOrigPrice && currentOrigPrice > currentPrice);
-  const discountPercent = hasDiscount 
-    ? Math.round(((currentOrigPrice - currentPrice) / currentOrigPrice) * 100) 
+  const discountPercent = hasDiscount
+    ? Math.round(((currentOrigPrice - currentPrice) / currentOrigPrice) * 100)
     : 0;
 
   const handleQuickAdd = (e) => {
@@ -35,17 +35,17 @@ export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
   return (
     <article className="product-card">
       <div className="product-card-image" onClick={() => onOpenDetail(product, selectedVariant)}>
-        <img 
-          src={product.image} 
-          alt={`${product.name} - Bếp Bà Vưn`} 
-          loading="lazy" 
+        <img
+          src={product.image}
+          alt={`${product.name} - Bếp Bà Vưn`}
+          loading="lazy"
         />
         <span className="product-badge">{product.category}</span>
         {hasDiscount && (
           <span className="product-discount-badge">-{discountPercent}%</span>
         )}
-        <button 
-          className="quick-view-btn" 
+        <button
+          className="quick-view-btn"
           onClick={(e) => {
             e.stopPropagation();
             onOpenDetail(product, selectedVariant);
@@ -90,26 +90,28 @@ export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
             </div>
           </div>
         )}
-        
+
         <div className="product-card-footer">
           <div className="product-price-box">
-            <span className="product-price">
-              {formatMoney(currentPrice)}
-            </span>
-            {hasDiscount && (
-              <span className="product-original-price">
-                {formatMoney(currentOrigPrice)}
+            <div className="product-price-row">
+              <span className="product-price">
+                {formatMoney(currentPrice)}
               </span>
-            )}
+              {hasDiscount && (
+                <span className="product-original-price">
+                  {formatMoney(currentOrigPrice)}
+                </span>
+              )}
+            </div>
             {product.hasVariants && (
               <span className="product-size-hint">
-                ({selectedVariant?.name || "Size tiêu chuẩn"})
+                {selectedVariant?.name || "Size tiêu chuẩn"}
               </span>
             )}
           </div>
 
-          <button 
-            className={`add-to-cart-btn ${justAdded ? "added" : ""}`} 
+          <button
+            className={`add-to-cart-btn ${justAdded ? "added" : ""}`}
             onClick={handleQuickAdd}
             title={`Thêm ${selectedVariant?.name || ""} vào giỏ`}
           >

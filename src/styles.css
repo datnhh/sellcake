@@ -496,7 +496,7 @@ a {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #e53935;
+  background: var(--primary);
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 6px;
@@ -576,20 +576,29 @@ a {
 .product-price-box {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+}
+
+.product-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .product-price {
-  font-size: 17px;
+  font-size: 16.5px;
   font-weight: 800;
   color: var(--text-main);
+  line-height: 1.2;
 }
 
 .product-original-price {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 11.5px;
+  color: #947e70;
   text-decoration: line-through;
   font-weight: 500;
+  line-height: 1.2;
 }
 
 .add-to-cart-btn {
@@ -2416,6 +2425,7 @@ a {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -2425,13 +2435,16 @@ a {
   .sync-card {
     padding: 24px 18px;
   }
+
   .sync-actions-panel {
     flex-direction: column;
     align-items: stretch;
   }
+
   .sync-button-group {
     flex-direction: column;
   }
+
   .sync-button-group .sync-btn {
     width: 100%;
   }
@@ -2545,9 +2558,17 @@ a {
 }
 
 @keyframes pulse-added {
-  0% { transform: scale(0.95); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.95);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* 2. Modal chi tiết sản phẩm (ProductDetailModal) */
