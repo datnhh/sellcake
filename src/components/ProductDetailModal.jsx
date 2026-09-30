@@ -1,6 +1,16 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { X, Plus, Minus, ShoppingCart, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
+
+// Lấy biến thể ban đầu: ưu tiên initialVariant -> biến thể nhỏ nhất theo giá -> defaultVariant
+function resolveInitialVariant(product, initialVariant) {
+  if (initialVariant) return initialVariant;
+  if (!product) return null;
+  if (Array.isArray(product.variants) && product.variants.length > 0) {
+    return [...product.variants].sort((a, b) => a.price - b.price)[0];
+  }
+  return product.defaultVariant || null;
+}
 
 export default function ProductDetailModal({ product, initialVariant, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
@@ -8,16 +18,62 @@ export default function ProductDetailModal({ product, initialVariant, onClose, o
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Biến thể đang chọn: ưu tiên initialVariant hoặc defaultVariant (size lớn nhất)
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const isClosedByPopStateRef = useRef(false);
+
+  // Xử lý nút Back trình duyệt / cử chỉ vuốt back trên mobile & phím Escape
+  useEffect(() => {
+    // Khóa cuộn màn hình nền khi modal mở
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Đẩy một entry vào history trình duyệt
+    window.history.pushState({ modal: "product-detail", productId: product?.id }, "");
+
+    const handlePopState = () => {
+      // Khi người dùng bấm Back trên browser hoặc vuốt back trên mobile
+      isClosedByPopStateRef.current = true;
+      if (onCloseRef.current) {
+        onCloseRef.current();
+      }
+    };
+
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && onCloseRef.current) {
+        onCloseRef.current();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      // Khôi phục cuộn trang nền
+      document.body.style.overflow = originalOverflow;
+
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("keydown", handleEscape);
+
+      // Nếu modal bị đóng thủ công (nút X, bấm overlay, hoặc thêm giỏ hàng) mà không phải do back,
+      // thì hoàn tác lại 1 bước lịch sử để giữ history stack sạch sẽ
+      if (!isClosedByPopStateRef.current && window.history.state?.modal === "product-detail") {
+        window.history.back();
+      }
+    };
+  }, []);
+
+  // Biến thể đang chọn: mặc định size nhỏ nhất (hoặc initialVariant nếu người dùng đã chọn trước từ Card)
   const [selectedVariant, setSelectedVariant] = useState(
-    initialVariant || product?.defaultVariant || product?.variants?.[0] || null
+    () => resolveInitialVariant(product, initialVariant)
   );
 
   // Đồng bộ khi đổi sản phẩm hoặc initialVariant
   useEffect(() => {
-    setSelectedVariant(
-      initialVariant || product?.defaultVariant || product?.variants?.[0] || null
-    );
+    setSelectedVariant(resolveInitialVariant(product, initialVariant));
     setQuantity(1);
   }, [product?.id, initialVariant]);
 

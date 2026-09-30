@@ -11,7 +11,7 @@ export default function Hero({ featuredProduct, onSelectProduct }) {
           <span>BÁNH THỦ CÔNG • NƯỚNG MỖI NGÀY</span>
         </div>
         <h1>
-          <span className="sr-only">Tiệm Bếp bà Vưn - Bánh Kem & Bánh Ngọt Thủ Công: </span>
+          <span className="sr-only">Tiệm Bếp bà Vưn - Bánh Flan Gato, Chuối Yến Mạch & Bánh Ngọt Thủ Công: </span>
           Hương vị ngọt ngào cho <em>những dịp đặc biệt.</em>
         </h1>
         <p className="hero-text">

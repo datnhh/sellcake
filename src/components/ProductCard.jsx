@@ -2,19 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Plus, Eye, Check } from "lucide-react";
 import { formatMoney } from "../config/shopConfig";
 
+// Lấy biến thể có giá thấp nhất (size nhỏ nhất)
+function getSmallestVariant(p) {
+  if (!p) return null;
+  if (Array.isArray(p.variants) && p.variants.length > 0) {
+    return [...p.variants].sort((a, b) => a.price - b.price)[0];
+  }
+  return p.defaultVariant || null;
+}
+
 export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
-  // Mặc định chọn Size lớn nhất (hoặc defaultVariant đã tính toán)
-  const [selectedVariant, setSelectedVariant] = useState(
-    product.defaultVariant || product.variants?.[0] || null
-  );
+  // Mặc định chọn Size nhỏ nhất (hoặc biến thể có giá thấp nhất)
+  const [selectedVariant, setSelectedVariant] = useState(() => getSmallestVariant(product));
   const [justAdded, setJustAdded] = useState(false);
 
   useEffect(() => {
-    if (product.defaultVariant) {
-      setSelectedVariant(product.defaultVariant);
-    } else if (product.variants && product.variants.length > 0) {
-      setSelectedVariant(product.variants[0]);
-    }
+    setSelectedVariant(getSmallestVariant(product));
   }, [product]);
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;

@@ -32,7 +32,7 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
   const [success, setSuccess] = useState(false);
   const [syncedProducts, setSyncedProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem("bakery-products-v2");
+      const saved = localStorage.getItem("bakery-products-v5");
       return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS_JSON;
     } catch {
       return DEFAULT_PRODUCTS_JSON;
@@ -57,8 +57,8 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
     try {
       const products = await fetchProductsFromSheet(DEFAULT_SHEET_CSV_URL);
       
-      // Lưu vào LocalStorage
-      localStorage.setItem("bakery-products-v2", JSON.stringify(products));
+      // Lưu vào LocalStorage v5
+      localStorage.setItem("bakery-products-v5", JSON.stringify(products));
       const nowFormatted = new Date().toLocaleString("vi-VN");
       localStorage.setItem("bakery-last-sync", nowFormatted);
 

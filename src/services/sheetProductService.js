@@ -242,16 +242,18 @@ export async function fetchProductsFromSheet(csvUrl = DEFAULT_SHEET_CSV_URL) {
 
   // Chuẩn hóa và tính toán minPrice, maxPrice, defaultVariant cho từng sản phẩm
   const products = Array.from(productMap.values()).map(product => {
-    const variants = product.variants;
+    // Sắp xếp các biến thể theo giá tăng dần (size nhỏ nhất lên đầu)
+    const variants = [...product.variants].sort((a, b) => a.price - b.price);
     const prices = variants.map(v => v.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
-    // Mặc định chọn Size Lớn Nhất (hoặc biến thể có giá cao nhất) theo yêu cầu của bạn
-    let defaultVariant = variants.find(v => v.price === maxPrice) || variants[0];
+    // Mặc định chọn Size Nhỏ Nhất (hoặc biến thể có giá thấp nhất)
+    let defaultVariant = variants.find(v => v.price === minPrice) || variants[0];
 
     return {
       ...product,
+      variants,
       minPrice,
       maxPrice,
       price: defaultVariant.price,

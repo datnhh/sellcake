@@ -13,6 +13,28 @@ import { SHOP_CONFIG, formatMoney } from "./config/shopConfig";
 import PRODUCTS_DATA from "./data/products.json";
 import { sendOrderToGoogleSheet } from "./services/orderApi";
 
+// Chuẩn hóa sản phẩm: đảm bảo variants được sắp xếp tăng dần và defaultVariant là size nhỏ nhất
+function normalizeProductsToSmallestVariant(items) {
+  if (!Array.isArray(items)) return items;
+  return items.map(product => {
+    if (!product.variants || product.variants.length === 0) return product;
+    const variants = [...product.variants].sort((a, b) => a.price - b.price);
+    const minPrice = Math.min(...variants.map(v => v.price));
+    const maxPrice = Math.max(...variants.map(v => v.price));
+    const defaultVariant = variants.find(v => v.price === minPrice) || variants[0];
+    return {
+      ...product,
+      variants,
+      minPrice,
+      maxPrice,
+      price: defaultVariant.price,
+      originalPrice: defaultVariant.originalPrice,
+      hasVariants: variants.length > 1,
+      defaultVariant
+    };
+  });
+}
+
 export default function App() {
   // Quản lý route hiển thị (trang chủ hoặc trang đồng bộ /sync-banh)
   const [currentRoute, setCurrentRoute] = useState(() => {
@@ -43,15 +65,23 @@ export default function App() {
     setCurrentRoute("home");
   };
 
-  // Quản lý danh sách sản phẩm (đọc từ cache LocalStorage hoặc file products.json)
+  // Quản lý danh sách sản phẩm (đọc từ cache LocalStorage hoặc file products.json, ưu tiên size nhỏ nhất)
   const [products, setProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem("bakery-products-v4");
-      if (!saved) return PRODUCTS_DATA;
-      const parsed = JSON.parse(saved);
-      return parsed;
+      const savedV5 = localStorage.getItem("bakery-products-v5");
+      if (savedV5) {
+        return normalizeProductsToSmallestVariant(JSON.parse(savedV5));
+      }
+      const savedV4 = localStorage.getItem("bakery-products-v4");
+      if (savedV4) {
+        localStorage.removeItem("bakery-products-v4");
+        const migrated = normalizeProductsToSmallestVariant(JSON.parse(savedV4));
+        localStorage.setItem("bakery-products-v5", JSON.stringify(migrated));
+        return migrated;
+      }
+      return normalizeProductsToSmallestVariant(PRODUCTS_DATA);
     } catch {
-      return PRODUCTS_DATA;
+      return normalizeProductsToSmallestVariant(PRODUCTS_DATA);
     }
   });
 
@@ -83,10 +113,10 @@ export default function App() {
     }
   }, []);
 
-  // Lưu sản phẩm vào localStorage khi có thay đổi
+  // Lưu sản phẩm vào localStorage khi có thay đổi (v5)
   useEffect(() => {
     try {
-      localStorage.setItem("bakery-products-v4", JSON.stringify(products));
+      localStorage.setItem("bakery-products-v5", JSON.stringify(products));
     } catch (e) {
       console.error("Không thể lưu sản phẩm vào localStorage:", e);
     }
@@ -119,15 +149,21 @@ export default function App() {
 
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
-  // Mở modal chi tiết bánh
+  // Mở modal chi tiết bánh (mặc định mở với size nhỏ nhất)
   const handleOpenDetail = (product, variant = null) => {
     setDetailProduct(product);
-    setDetailInitialVariant(variant || product.defaultVariant || product.variants?.[0] || null);
+    const smallestVariant = product?.variants && product.variants.length > 0
+      ? [...product.variants].sort((a, b) => a.price - b.price)[0]
+      : null;
+    setDetailInitialVariant(variant || product?.defaultVariant || smallestVariant || null);
   };
 
-  // Hàm thêm vào giỏ hàng (Mặc định chọn Size lớn nhất nếu không chỉ định)
+  // Hàm thêm vào giỏ hàng (Mặc định chọn Size nhỏ nhất nếu không chỉ định)
   const handleAddToCart = (product, quantity = 1, variant = null) => {
-    const selectedVariant = variant || product.defaultVariant || product.variants?.[0] || {
+    const smallestVariant = product?.variants && product.variants.length > 0
+      ? [...product.variants].sort((a, b) => a.price - b.price)[0]
+      : null;
+    const selectedVariant = variant || product?.defaultVariant || smallestVariant || {
       id: `${product.id}_def`,
       name: "Size tiêu chuẩn",
       price: product.price,
@@ -231,7 +267,9 @@ export default function App() {
 
   // Khôi phục danh sách bánh mẫu ban đầu
   const handleResetProducts = () => {
-    setProducts(PRODUCTS_DATA);
+    const defaultItems = normalizeProductsToSmallestVariant(PRODUCTS_DATA);
+    setProducts(defaultItems);
+    localStorage.removeItem("bakery-products-v5");
     localStorage.removeItem("bakery-products-v4");
     setToast("✓ Đã khôi phục thực đơn bánh mặc định!");
     setTimeout(() => setToast(null), 3000);
@@ -368,6 +406,7 @@ export default function App() {
       {/* Modal Chi Tiết Bánh */}
       {detailProduct && (
         <ProductDetailModal
+          key={detailProduct.id}
           product={detailProduct}
           initialVariant={detailInitialVariant}
           onClose={() => setDetailProduct(null)}
