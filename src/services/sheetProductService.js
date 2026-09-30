@@ -81,18 +81,34 @@ export function parsePrice(val) {
  * Hỗ trợ gom nhóm biến thể theo ID và kế thừa dữ liệu dòng con.
  */
 export async function fetchProductsFromSheet(csvUrl = DEFAULT_SHEET_CSV_URL) {
+  // Chống cache của trình duyệt và Google CDN bằng cách đính kèm timestamp ngẫu nhiên
+  const separator = csvUrl.includes("?") ? "&" : "?";
+  const noCacheUrl = `${csvUrl}${separator}_t=${Date.now()}`;
+
   let response;
   try {
-    response = await fetch(csvUrl, {
+    response = await fetch(noCacheUrl, {
       method: "GET",
-      headers: { "Accept": "text/csv, text/plain;charset=utf-8" }
+      cache: "no-store",
+      headers: { 
+        "Accept": "text/csv, text/plain;charset=utf-8",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache"
+      }
     });
   } catch (err) {
     // Nếu link chính lỗi (ví dụ chưa có sheet public_web), thử link dự phòng
     if (csvUrl !== FALLBACK_SHEET_CSV_URL) {
-      response = await fetch(FALLBACK_SHEET_CSV_URL, {
+      const fallbackSeparator = FALLBACK_SHEET_CSV_URL.includes("?") ? "&" : "?";
+      const fallbackNoCache = `${FALLBACK_SHEET_CSV_URL}${fallbackSeparator}_t=${Date.now()}`;
+      response = await fetch(fallbackNoCache, {
         method: "GET",
-        headers: { "Accept": "text/csv, text/plain;charset=utf-8" }
+        cache: "no-store",
+        headers: { 
+          "Accept": "text/csv, text/plain;charset=utf-8",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache"
+        }
       });
     } else {
       throw err;
@@ -189,16 +205,19 @@ export async function fetchProductsFromSheet(csvUrl = DEFAULT_SHEET_CSV_URL) {
       ? parsePrice(row[originalPriceIdx]) 
       : Math.round(price * 1.15);
 
-    const image = imageIdx !== -1 && row[imageIdx] && row[imageIdx].startsWith("http")
-      ? row[imageIdx].trim() 
-      : "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80";
+    const rawImage = imageIdx !== -1 && row[imageIdx] ? row[imageIdx].trim() : "";
+    const isValidImage = (src) => src && (src.startsWith("http") || src.startsWith("/") || src.startsWith("./"));
+
+    const image = isValidImage(rawImage)
+      ? rawImage 
+      : "/assets/1/1.webp";
 
     let images = [];
     if (imagesIdx !== -1 && row[imagesIdx]) {
       images = row[imagesIdx]
         .split(",")
         .map((img) => img.trim())
-        .filter((img) => img.startsWith("http"));
+        .filter((img) => isValidImage(img));
     }
     if (images.length === 0) {
       images = [image];

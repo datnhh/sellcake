@@ -170,6 +170,10 @@ export default function ProductDetailModal({ product, initialVariant, onClose, o
                 loading="lazy"
                 decoding="async"
                 className="gallery-main-img"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "/assets/1/1.webp";
+                }}
               />
 
               {imageList.length > 1 && (
@@ -215,6 +219,10 @@ export default function ProductDetailModal({ product, initialVariant, onClose, o
                       alt={`${product.name} thumb ${idx + 1}`}
                       loading="lazy"
                       decoding="async"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/assets/1/1.webp";
+                      }}
                     />
                   </button>
                 ))}

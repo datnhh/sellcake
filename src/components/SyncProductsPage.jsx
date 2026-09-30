@@ -32,7 +32,7 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
   const [success, setSuccess] = useState(false);
   const [syncedProducts, setSyncedProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem("bakery-products-v5");
+      const saved = localStorage.getItem("bakery-products-v6");
       return saved ? JSON.parse(saved) : DEFAULT_PRODUCTS_JSON;
     } catch {
       return DEFAULT_PRODUCTS_JSON;
@@ -57,8 +57,19 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
     try {
       const products = await fetchProductsFromSheet(DEFAULT_SHEET_CSV_URL);
       
-      // Lưu vào LocalStorage v5
-      localStorage.setItem("bakery-products-v5", JSON.stringify(products));
+      // 1. Quét sạch tất cả các key cache cũ liên quan đến bakery-products
+      try {
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith("bakery-products")) {
+            localStorage.removeItem(key);
+          }
+        });
+      } catch (e) {
+        console.warn("Không thể xóa cache cũ:", e);
+      }
+
+      // 2. Lưu vào LocalStorage v6 mới nhất
+      localStorage.setItem("bakery-products-v6", JSON.stringify(products));
       const nowFormatted = new Date().toLocaleString("vi-VN");
       localStorage.setItem("bakery-last-sync", nowFormatted);
 
@@ -232,9 +243,18 @@ export default function SyncProductsPage({ onBackToHome, onProductsUpdated }) {
             <div className="alert-content">
               <h4>Đồng bộ thành công!</h4>
               <p>
-                Đã nạp thành công <b>{syncedProducts.length}</b> món bánh từ Google Sheet vào hệ thống.
-                Khách hàng truy cập website sẽ thấy ngay danh mục bánh mới nhất.
+                Đã nạp thành công <b>{syncedProducts.length}</b> món bánh từ Google Sheet vào hệ thống và làm mới toàn bộ bộ nhớ đệm (Cache).
               </p>
+              <div style={{ marginTop: "12px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="sync-btn sync-btn-primary"
+                  onClick={() => { window.location.href = "/"; }}
+                  style={{ padding: "8px 16px", fontSize: "14px" }}
+                >
+                  🚀 Tải lại trang bán hàng ngay (Xem dữ liệu mới)
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -61,25 +61,22 @@ export default function App() {
   }, []);
 
   const handleBackToHome = () => {
-    window.history.pushState({}, "", "/");
-    setCurrentRoute("home");
+    window.location.href = "/";
   };
 
   // Quản lý danh sách sản phẩm (đọc từ cache LocalStorage hoặc file products.json, ưu tiên size nhỏ nhất)
   const [products, setProducts] = useState(() => {
     try {
-      const savedV5 = localStorage.getItem("bakery-products-v5");
-      if (savedV5) {
-        return normalizeProductsToSmallestVariant(JSON.parse(savedV5));
+      const savedV6 = localStorage.getItem("bakery-products-v6");
+      if (savedV6) {
+        return normalizeProductsToSmallestVariant(JSON.parse(savedV6));
       }
-      const savedV4 = localStorage.getItem("bakery-products-v4");
-      if (savedV4) {
-        localStorage.removeItem("bakery-products-v4");
-        const migrated = normalizeProductsToSmallestVariant(JSON.parse(savedV4));
-        localStorage.setItem("bakery-products-v5", JSON.stringify(migrated));
-        return migrated;
-      }
-      return normalizeProductsToSmallestVariant(PRODUCTS_DATA);
+      // Dọn dẹp cache cũ v4, v5 để nạp danh mục ảnh mới chuẩn từ products.json
+      localStorage.removeItem("bakery-products-v5");
+      localStorage.removeItem("bakery-products-v4");
+      const initial = normalizeProductsToSmallestVariant(PRODUCTS_DATA);
+      localStorage.setItem("bakery-products-v6", JSON.stringify(initial));
+      return initial;
     } catch {
       return normalizeProductsToSmallestVariant(PRODUCTS_DATA);
     }
@@ -113,10 +110,10 @@ export default function App() {
     }
   }, []);
 
-  // Lưu sản phẩm vào localStorage khi có thay đổi (v5)
+  // Lưu sản phẩm vào localStorage khi có thay đổi (v6)
   useEffect(() => {
     try {
-      localStorage.setItem("bakery-products-v5", JSON.stringify(products));
+      localStorage.setItem("bakery-products-v6", JSON.stringify(products));
     } catch (e) {
       console.error("Không thể lưu sản phẩm vào localStorage:", e);
     }
@@ -269,6 +266,7 @@ export default function App() {
   const handleResetProducts = () => {
     const defaultItems = normalizeProductsToSmallestVariant(PRODUCTS_DATA);
     setProducts(defaultItems);
+    localStorage.removeItem("bakery-products-v6");
     localStorage.removeItem("bakery-products-v5");
     localStorage.removeItem("bakery-products-v4");
     setToast("✓ Đã khôi phục thực đơn bánh mặc định!");

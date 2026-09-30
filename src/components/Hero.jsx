@@ -31,6 +31,10 @@ export default function Hero({ featuredProduct, onSelectProduct }) {
             <img
               src={featuredProduct.image}
               alt={`${featuredProduct.name} - Bánh bán chạy nhất Tiệm Bếp Bà Vưn`}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "/assets/1/1.webp";
+              }}
             />
             <div className="hero-card-info">
               <div>

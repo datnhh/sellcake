@@ -1,27 +1,27 @@
 id,name,category,variant_name,price,original_price,image,images,description,ingredients,featured
 1,Flan Gato Socola / Matcha,Bánh lạnh,Size Lớn (16cm),60000,70000,/assets/1/1.webp,"/assets/1/1.webp,/assets/1/2.webp,/assets/1/3.webp",Sự kết hợp hoàn hảo giữa cốt bông lan xốp mịn thơm đắng vị socola/matcha và lớp flan caramel béo ngậy tan trên đầu lưỡi.,"Trứng gà tươi, sữa tươi Anchor, whipping cream, cốt bánh socola/matcha, caramel.",TRUE
-1,,,,30000,35000,/assets/1/1.webp,"/assets/1/1.webp,/assets/1/2.webp,/assets/1/3.webp",,,,
+1,,,Size Nhỏ (10cm),30000,35000,/assets/1/1.webp,"/assets/1/1.webp,/assets/1/2.webp,/assets/1/3.webp",,,,
 2,Chuối Yến Mạch Hạt Dinh Dưỡng,Bánh nướng,Ổ lớn (350g),80000,90000,/assets/2/1.webp,"/assets/2/1.webp,/assets/2/2.webp,/assets/2/3.webp,/assets/2/4.webp,/assets/2/5.webp","Bánh nướng healthy không bột mì, vị ngọt thanh tự nhiên từ chuối hòa quyện hạnh nhân bùi ngậy và socola chip giòn rụm.","Chuối sứ chín tự nhiên, yến mạch nguyên cám, hạnh nhân, socola chip, mật ong hoa rừng.",TRUE
-2,,,,40000,45000,/assets/2/1.webp,"/assets/2/1.webp,/assets/2/2.webp,/assets/2/3.webp,/assets/2/4.webp,/assets/2/5.webp",,,,
+2,,,Ổ nhỏ (170g),40000,45000,/assets/2/1.webp,"/assets/2/1.webp,/assets/2/2.webp,/assets/2/3.webp,/assets/2/4.webp,/assets/2/5.webp",,,,
 3,Flan Caramel Truyền Thống,Bánh lạnh,Set 10 hũ,100000,110000,/assets/3/1.webp,"/assets/3/1.webp,/assets/3/2.webp","Hũ bánh flan núng nính mềm mịn như lụa, vị béo thơm đậm đà của sữa trứng quyện cùng caramel đắng ngọt dịu êm.","Trứng gà ta tươi, sữa tươi nguyên kem, kem tươi Anchor, đường thắng caramel thủ công.",TRUE
-3,,,,55000,60000,/assets/3/1.webp,"/assets/3/1.webp,/assets/3/2.webp",,,,
+3,,,Set 5 hũ,55000,60000,/assets/3/1.webp,"/assets/3/1.webp,/assets/3/2.webp",,,,
 4,Sữa Chua Dẻo Tươi Mát,Bánh lạnh,Set 10 hũ,100000,110000,/assets/4/1.webp,"/assets/4/1.webp,/assets/4/2.webp","Sữa chua nhà làm lên men truyền thống, kết cấu sánh dẻo mát lạnh, vị chua ngọt thanh dịu hỗ trợ tiêu hóa mỗi ngày.","Sữa tươi thanh trùng, men sữa chua cái tự nhiên, sữa đặc béo ngậy.",FALSE
-4,,,,55000,60000,/assets/4/1.webp,"/assets/4/1.webp,/assets/4/2.webp",,,,
+4,,,Set 5 hũ,55000,60000,/assets/4/1.webp,"/assets/4/1.webp,/assets/4/2.webp",,,,
 5,Bánh Bò Bông Nước Cốt Dừa,Bánh hấp,Hộp 8 bánh,65000,75000,/assets/5/1.webp,"/assets/5/1.webp,/assets/5/2.webp","Chiếc bánh nở bông nhiều rễ tre mềm xốp, thơm phức mùi lá dứa vườn quyện vị béo ngậy ngào ngạt của nước cốt dừa tươi.","Bột gạo nguyên chất, nước cốt lá dứa tươi, cốt dừa béo đậm đà, men cơm rượu.",FALSE
-5,,,,35000,40000,/assets/5/1.webp,"/assets/5/1.webp,/assets/5/2.webp",,,,
+5,,,Hộp 4 bánh,35000,40000,/assets/5/1.webp,"/assets/5/1.webp,/assets/5/2.webp",,,,
 6,Combo Bữa Xế Dinh Dưỡng,Combo,Set Lớn (350g),75000,85000,/assets/6/1.webp,/assets/6/1.webp,"Set ăn xế nhẹ bụng và giàu năng lượng, kết hợp hoàn hảo giữa bánh chuối nướng ấm thơm bùi và sữa chua chua ngọt mát lành.","Bánh chuối yến mạch nướng hạt, kèm hũ sữa chua dẻo tươi lên men tự nhiên.",TRUE
-6,,,,45000,50000,/assets/6/1.webp,/assets/6/1.webp,,,,
+6,,,Set Nhỏ (170g),45000,50000,/assets/6/1.webp,/assets/6/1.webp,,,,
 7,Bông Lan Yogurt Mềm Mịn,Bánh nướng,Khuôn 22cm,100000,115000,/assets/7/1.webp,"/assets/7/1.webp,/assets/7/2.webp,/assets/7/3.webp,/assets/7/4.webp","Cốt bánh nhẹ tơi như mây, vị béo dịu của trứng sữa hòa cùng chút chua thanh nhẹ từ yogurt, ăn hoài không biết ngán.","Bột mì hảo hạng, sữa chua dẻo, trứng gà tươi, dầu thực vật cao cấp, đường mía.",TRUE
-7,,,,50000,60000,/assets/7/1.webp,"/assets/7/1.webp,/assets/7/2.webp,/assets/7/3.webp,/assets/7/4.webp",,,,
+7,,,Khuôn 12cm,50000,60000,/assets/7/1.webp,"/assets/7/1.webp,/assets/7/2.webp,/assets/7/3.webp,/assets/7/4.webp",,,,
 8,Castella Cà Phê Đậm Vị,Bánh nướng,Khuôn 18cm,110000,125000,/assets/8/1.webp,/assets/8/1.webp,"Thớ bánh mềm ẩm thơm lừng ngào ngạt hương cà phê rang xay, vị đắng ngọt hài hòa đánh thức mọi giác quan thưởng thức.","Cốt bánh Castella truyền thống, cà phê espresso nguyên chất, trứng tươi, sữa tươi.",FALSE
-8,,,,65000,75000,/assets/8/1.webp,/assets/8/1.webp,,,,
+8,,,Khuôn 14cm,65000,75000,/assets/8/1.webp,/assets/8/1.webp,,,,
 9,Souffle Cheesecake Nhật Bản,Bánh nướng,Khuôn 22cm,120000,140000,/assets/9/1.webp,"/assets/9/1.webp,/assets/9/2.webp,/assets/9/3.webp,/assets/9/4.webp,/assets/9/5.webp,/assets/9/6.webp","Bánh phô mai nướng phong cách Nhật núng nính nhẹ xốp, tan ngay đầu lưỡi với hương phô mai thơm ngậy đầy mê hoặc.","Kem phô mai Cream Cheese Anchor, bơ lạt Pháp, trứng gà tươi, sữa tươi nguyên kem.",TRUE
-9,,,,60000,70000,/assets/9/1.webp,"/assets/9/1.webp,/assets/9/2.webp,/assets/9/3.webp,/assets/9/4.webp,/assets/9/5.webp,/assets/9/6.webp",,,,
+9,,,Khuôn 12cm,60000,70000,/assets/9/1.webp,"/assets/9/1.webp,/assets/9/2.webp,/assets/9/3.webp,/assets/9/4.webp,/assets/9/5.webp,/assets/9/6.webp",,,,
 10,Castella Dark Chocolate,Bánh nướng,Khuôn 18cm,110000,125000,/assets/10/1.webp,"/assets/10/1.webp,/assets/10/2.webp","Bánh bông lan socola xốp ẩm phủ đầy hạt socola chip giòn bùi, vị đậm đà sang trọng dành riêng cho tín đồ socola.","Socola đen nguyên chất đun chảy, socola chip Bỉ, bột mì, trứng gà tươi, sữa tươi.",FALSE
-10,,,,65000,75000,/assets/10/1.webp,"/assets/10/1.webp,/assets/10/2.webp",,,,
+10,,,Khuôn 14cm,65000,75000,/assets/10/1.webp,"/assets/10/1.webp,/assets/10/2.webp",,,,
 11,Hộp Mix Chuối Yến Mạch 2 Vị,Bánh nướng,Hộp lớn (350g),80000,90000,/assets/11/1.webp,"/assets/11/1.webp,/assets/11/2.webp,/assets/11/3.webp",Hộp bánh tiện lợi trọn vẹn cả 2 hương vị: bánh chuối yến mạch nguyên bản thơm lành và vị socola hạt đậm đà quyến rũ.,"Chuối sứ chín, yến mạch nguyên cám, socola đen, hạnh nhân giòn, mật ong.",TRUE
-11,,,,40000,45000,/assets/11/1.webp,"/assets/11/1.webp,/assets/11/2.webp,/assets/11/3.webp",,,,
+11,,,Hộp nhỏ (170g),40000,45000,/assets/11/1.webp,"/assets/11/1.webp,/assets/11/2.webp,/assets/11/3.webp",,,,
 12,Bánh Chuối Nướng Bơ Hạt,Bánh nướng,Ổ lớn (350g),60000,70000,/assets/12/1.webp,"/assets/12/1.webp,/assets/12/2.webp,/assets/12/3.webp",Hương vị bánh chuối nướng tuổi thơ nồng nàn nâng tầm cùng bơ Pháp và hạt dinh dưỡng giòn rụm béo bùi.,"Chuối chín ngọt đậm, bơ lạt Anchor, hạt óc chó, hạnh nhân lát, socola chip.",FALSE
-12,,,,30000,35000,/assets/12/1.webp,"/assets/12/1.webp,/assets/12/2.webp,/assets/12/3.webp",,,,
+12,,,Ổ nhỏ (170g),30000,35000,/assets/12/1.webp,"/assets/12/1.webp,/assets/12/2.webp,/assets/12/3.webp",,,,
 13,Hộp Mix Chuối Nướng 2 Vị,Bánh nướng,Hộp lớn (350g),60000,70000,/assets/13/1.webp,"/assets/13/1.webp,/assets/13/2.webp,/assets/13/3.webp","Set mix 2 vị chuối nướng bơ truyền thống và socola ấm thơm, đa dạng hương vị cho cả gia đình cùng thưởng thức.","Chuối nướng truyền thống, bánh chuối socola, bơ lạt Anchor, hạt ngũ cốc rang.",FALSE
-13,,,,30000,35000,/assets/13/1.webp,"/assets/13/1.webp,/assets/13/2.webp,/assets/13/3.webp",,,,
+13,,,Hộp nhỏ (170g),30000,35000,/assets/13/1.webp,"/assets/13/1.webp,/assets/13/2.webp,/assets/13/3.webp",,,,

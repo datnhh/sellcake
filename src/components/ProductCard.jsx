@@ -42,6 +42,10 @@ export default function ProductCard({ product, onAddToCart, onOpenDetail }) {
           src={product.image}
           alt={`${product.name} - Bếp Bà Vưn`}
           loading="lazy"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/assets/1/1.webp";
+          }}
         />
         <span className="product-badge">{product.category}</span>
         {hasDiscount && (
