@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /sync-banh
 
-Sitemap: https://sellcake.hoaidat-90.workers.dev/sitemap.xml
+Sitemap: https://bepbavan.pages.dev/sitemap.xml

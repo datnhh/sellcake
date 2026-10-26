@@ -1,0 +1,23 @@
+{
+  "name": "Tiệm Bếp bà Vưn - Bánh Flan Gato, Chuối Yến Mạch & Bánh Ngọt Thủ Công",
+  "short_name": "Bếp Bà Vưn",
+  "description": "Tiệm Bếp bà Vưn chuyên bánh Flan Gato béo ngậy, bánh chuối yến mạch nướng hạt dinh dưỡng, Castella, Souffle Cheesecake và sữa chua dẻo tươi mới mỗi ngày tại Cát Lái, TP. Thủ Đức.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfaf6",
+  "theme_color": "#944026",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

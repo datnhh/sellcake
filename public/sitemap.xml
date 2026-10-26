@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://sellcake.hoaidat-90.workers.dev/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <loc>https://bepbavan.pages.dev/</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://sellcake.hoaidat-90.workers.dev/#products</loc>
-    <lastmod>2026-09-21</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://sellcake.hoaidat-90.workers.dev/#promise</loc>
-    <lastmod>2026-09-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://sellcake.hoaidat-90.workers.dev/#contact</loc>
-    <lastmod>2026-09-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/og-image.jpg</image:loc>
+      <image:title>Tiệm Bếp bà Vưn - Bánh Flan Gato, Chuối Yến Mạch &amp; Bánh Ngọt Thủ Công</image:title>
+      <image:caption>Bánh thủ công nướng mới mỗi ngày tại Tiệm Bếp bà Vưn - Cát Lái, TP. Thủ Đức</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/assets/1/1.webp</image:loc>
+      <image:title>Flan Gato Socola / Matcha - Tiệm Bếp bà Vưn</image:title>
+      <image:caption>Cốt bông lan xốp mịn vị socola/matcha kết hợp lớp flan caramel béo ngậy</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/assets/2/1.webp</image:loc>
+      <image:title>Bánh Chuối Yến Mạch Hạt Dinh Dưỡng - Tiệm Bếp bà Vưn</image:title>
+      <image:caption>Bánh nướng healthy không bột mì từ chuối chín, yến mạch nguyên cám và hạnh nhân</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/assets/3/1.webp</image:loc>
+      <image:title>Flan Caramel Truyền Thống - Tiệm Bếp bà Vưn</image:title>
+      <image:caption>Bánh flan trứng sữa tươi mềm mịn quyện caramel thủ công</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/assets/7/1.webp</image:loc>
+      <image:title>Bông Lan Yogurt Mềm Mịn - Tiệm Bếp bà Vưn</image:title>
+      <image:caption>Bánh bông lan sữa chua nhẹ xốp, ít ngọt</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://bepbavan.pages.dev/assets/9/1.webp</image:loc>
+      <image:title>Souffle Cheesecake Nhật Bản - Tiệm Bếp bà Vưn</image:title>
+      <image:caption>Bánh phô mai nướng phong cách Nhật Bản mềm mịn tan ngay đầu lưỡi</image:caption>
+    </image:image>
   </url>
 </urlset>
